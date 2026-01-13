@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import {View, Dimensions, StyleSheet, TouchableHighlight} from 'react-native';
 import {COLORS} from '../constants/colors';
 import ImageLoader from './image-loader';
@@ -18,23 +18,14 @@ export default function HotelImagesCarousel({banner}) {
 
   const carouselRef = useRef(null);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     return (
       <View style={styles.item} key={item.id}>
         <TouchableHighlight
-          onPressIn={() => setCurrentIndex(item.id)}
-          onPress={() => [setIsImageVisible(true)]}>
+          onPressIn={() => setCurrentIndex(index)}
+          onPress={() => setIsImageVisible(true)}>
           <ImageLoader image={item.image} style={styles.image} />
         </TouchableHighlight>
-
-        <View style={styles.dotContainer}>
-          {banner.map((data, i) => (
-            <View
-              key={i}
-              style={item.id === data.id ? styles.activeDot : styles.dot}
-            />
-          ))}
-        </View>
       </View>
     );
   };
@@ -53,15 +44,24 @@ export default function HotelImagesCarousel({banner}) {
       </Modal>
       <Carousel
         ref={carouselRef}
-        sliderWidth={width}
-        sliderHeight={width}
-        itemWidth={width}
+        width={width}
+        height={250}
         data={banner}
         renderItem={renderItem}
-        hasParallaxImages={true}
-        autoplay={true}
+        autoPlay={true}
         loop={true}
+        pagingEnabled={true}
+        snapEnabled={true}
+        onSnapToItem={index => setCurrentIndex(index)}
       />
+      <View style={styles.dotContainer}>
+        {banner.map((_, i) => (
+          <View
+            key={i}
+            style={i === currentIndex ? styles.activeDot : styles.dot}
+          />
+        ))}
+      </View>
     </View>
   );
 }

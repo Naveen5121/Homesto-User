@@ -15,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const {width} = Dimensions.get('window');
 
 import {useNavigation} from '@react-navigation/native';
-import {Rating, AirbnbRating} from 'react-native-elements';
+import {Rating, AirbnbRating} from '@rneui/themed';
 import ConvertIntoRupees from './convert-in-rupees';
 
 export default function FlightDealsCard() {

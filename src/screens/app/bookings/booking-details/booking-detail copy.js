@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, ScrollView, Image} from 'react-native';
 import styles from './style';
-import {AirbnbRating} from 'react-native-elements';
+import {AirbnbRating} from '@rneui/themed';
 import {COLORS} from '../../../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {Divider} from 'react-native-paper';

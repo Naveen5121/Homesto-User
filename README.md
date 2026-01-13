@@ -1,79 +1,150 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# JooYoo - React Native Hotel Booking App
 
-# Getting Started
+This is a React Native application for hotel bookings, built with React Native 0.74.5 (stable version).
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Prerequisites
 
-## Step 1: Start the Metro Server
+Before you begin, ensure you have the following installed:
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+- **Node.js** >= 18.x
+- **npm** or **yarn**
+- **React Native CLI**: `npm install -g react-native-cli`
+- **Android Studio** (for Android development)
+  - Android SDK
+  - Android SDK Platform 34
+  - Android Virtual Device (AVD)
+- **Xcode** (for iOS development, macOS only)
+  - CocoaPods: `sudo gem install cocoapods`
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-# using npm
-npm start
+git clone <repository-url>
+cd homestouser
+```
 
-# OR using Yarn
+### 2. Install Dependencies
+
+```bash
+# Install Node dependencies
+npm install
+
+# For iOS, install CocoaPods dependencies
+cd ios && pod install && cd ..
+```
+
+### 3. Start Metro Bundler
+
+Start the Metro bundler in a separate terminal:
+
+```bash
+npm start
+```
+
+Or with yarn:
+
+```bash
 yarn start
 ```
 
-## Step 2: Start your Application
+### 4. Run the Application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+#### For Android
 
-### For Android
+Make sure you have an Android emulator running or a device connected via USB with USB debugging enabled.
 
 ```bash
-# using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### For iOS
+#### For iOS (macOS only)
+
+Make sure you have Xcode installed and an iOS simulator available.
 
 ```bash
-# using npm
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## Project Structure
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```
+homestouser/
+├── android/          # Android native code
+├── ios/              # iOS native code
+├── src/
+│   ├── action/       # API services
+│   ├── components/   # Reusable components
+│   ├── constants/    # App constants
+│   ├── navigations/  # Navigation setup
+│   └── screens/      # Screen components
+├── App.tsx           # Main app component
+└── package.json      # Dependencies
+```
 
-## Step 3: Modifying your App
+## Key Dependencies
 
-Now that you have successfully run the app, let's modify it.
+- **React Native**: 0.76.5
+- **React Navigation**: Navigation library
+- **React Native Reanimated**: Animation library
+- **React Native Paper**: Material Design components
+- **@rneui/themed**: UI component library
+- **React Native Vector Icons**: Icon library
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Building for Production
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+### Android
 
-## Congratulations! :tada:
+1. Generate a signing key (if you haven't already)
+2. Update `android/app/build.gradle` with your signing configuration
+3. Build the APK:
 
-You've successfully run and modified your React Native App. :partying_face:
+```bash
+cd android
+./gradlew assembleRelease
+```
 
-### Now what?
+The APK will be located at `android/app/build/outputs/apk/release/app-release.apk`
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+### iOS
 
-# Troubleshooting
+1. Open `ios/JooYoo.xcworkspace` in Xcode
+2. Select your target device/simulator
+3. Product > Archive
+4. Follow the prompts to distribute your app
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Troubleshooting
 
-# Learn More
+### Common Issues
 
-To learn more about React Native, take a look at the following resources:
+1. **Metro bundler cache issues**:
+   ```bash
+   npm start -- --reset-cache
+   ```
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+2. **Android build failures**:
+   - Clean the build: `cd android && ./gradlew clean`
+   - Delete `node_modules` and reinstall: `rm -rf node_modules && npm install`
+
+3. **iOS build failures**:
+   - Clean build folder in Xcode: Product > Clean Build Folder
+   - Reinstall pods: `cd ios && pod deintegrate && pod install`
+
+4. **Package linking issues**:
+   - For Android: `cd android && ./gradlew clean`
+   - For iOS: `cd ios && pod install`
+
+## Environment Setup
+
+Make sure you have completed the [React Native Environment Setup](https://reactnative.dev/docs/environment-setup) before running the project.
+
+## Learn More
+
+- [React Native Documentation](https://reactnative.dev/docs/getting-started)
+- [React Navigation](https://reactnavigation.org/)
+- [React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)
+
+## License
+
+This project is private and proprietary.

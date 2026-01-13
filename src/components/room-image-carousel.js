@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import {
   View,
   Dimensions,
@@ -22,26 +22,15 @@ export default function RoomImageCarousel({banner}) {
     url: option.image,
   }));
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item, index}) => {
     return (
-      <>
-        <TouchableHighlight
-          onPressIn={() => setCurrentIndex(item.id)}
-          onPress={() => [setIsImageVisible(true)]}
-          style={styles.item}
-          key={item.id}>
-          <Image source={{uri: item.image}} style={styles.image} />
-        </TouchableHighlight>
-
-        <View style={styles.dotContainer}>
-          {banner.map((data, i) => (
-            <View
-              key={i}
-              style={item.id === data.id ? styles.activeDot : styles.dot}
-            />
-          ))}
-        </View>
-      </>
+      <TouchableHighlight
+        onPressIn={() => setCurrentIndex(index)}
+        onPress={() => setIsImageVisible(true)}
+        style={styles.item}
+        key={item.id}>
+        <Image source={{uri: item.image}} style={styles.image} />
+      </TouchableHighlight>
     );
   };
 
@@ -59,15 +48,24 @@ export default function RoomImageCarousel({banner}) {
       </Modal>
       <Carousel
         ref={carouselRef}
-        sliderWidth={width}
-        sliderHeight={width}
-        itemWidth={width}
+        width={width}
+        height={175}
         data={banner}
         renderItem={renderItem}
-        hasParallaxImages={true}
-        autoplay={true}
+        autoPlay={true}
         loop={true}
+        pagingEnabled={true}
+        snapEnabled={true}
+        onSnapToItem={index => setCurrentIndex(index)}
       />
+      <View style={styles.dotContainer}>
+        {banner.map((_, i) => (
+          <View
+            key={i}
+            style={i === currentIndex ? styles.activeDot : styles.dot}
+          />
+        ))}
+      </View>
     </View>
   );
 }

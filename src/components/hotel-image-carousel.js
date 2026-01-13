@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import Carousel from 'react-native-snap-carousel';
+import Carousel from 'react-native-reanimated-carousel';
 import {
   View,
   Dimensions,
@@ -54,15 +54,15 @@ export default function HotelImageCarousel({banner}) {
       {/* Carousel */}
       <Carousel
         ref={carouselRef}
-        sliderWidth={width}
-        sliderHeight={width}
-        itemWidth={width}
+        width={width}
+        height={275}
         data={banner}
         renderItem={renderItem}
-        hasParallaxImages={true}
-        autoplay={true}
+        autoPlay={true}
         loop={true}
-        onSnapToItem={index => setCurrentIndex(index)} // sync dots
+        pagingEnabled={true}
+        snapEnabled={true}
+        onSnapToItem={index => setCurrentIndex(index)}
       />
 
       {/* Dots */}

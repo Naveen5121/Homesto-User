@@ -4,7 +4,7 @@ import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import {COLORS} from '../../../../constants/colors';
 import {ProgressBar} from 'react-native-paper';
-import {AirbnbRating} from 'react-native-elements';
+import {AirbnbRating} from '@rneui/themed';
 import ConvertIntoRupees from '../../../../components/convert-in-rupees';
 import HotelImageCarousel from '../../../../components/hotel-image-carousel';
 import Bullets from '../../../../components/bullets';

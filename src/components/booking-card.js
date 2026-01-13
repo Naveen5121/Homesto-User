@@ -13,7 +13,7 @@ import {FONT_FAMILY} from '../constants/font-family';
 import Feather from 'react-native-vector-icons/Feather';
 
 import {useNavigation} from '@react-navigation/native';
-import {AirbnbRating} from 'react-native-elements';
+import {AirbnbRating} from '@rneui/themed';
 
 export default function BookingCard({data, cancleBooking}) {
   const navigation = useNavigation();

@@ -11,7 +11,7 @@ import {COLORS} from '../constants/colors';
 import {FONT_FAMILY} from '../constants/font-family';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
-import {AirbnbRating} from 'react-native-elements';
+import {AirbnbRating} from '@rneui/themed';
 import ConvertIntoRupees from './convert-in-rupees';
 import CalculateGst from './calculate-gst';
 import ImageLoader from './image-loader';
