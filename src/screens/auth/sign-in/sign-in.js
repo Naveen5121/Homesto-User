@@ -36,14 +36,14 @@ export default function SignIn(props) {
           const data = await API.getLoginViaEmail(email, password);
           console.log(data);
 
-          if (data.success === 'true') {
+          if (data && data.success === 'true') {
             await AsyncStorage.setItem('userId', data.user_id);
             await AsyncStorage.setItem('accessToken', data.token);
             signIn({token: data.token, id: data.user_id});
             setIsLoading(false);
           } else {
-            ToastAlertMsg('Invalid UserName or Password.');
             setIsLoading(false);
+            ToastAlertMsg(data?.msg || 'Invalid UserName or Password.');
           }
         } else {
           ToastAlertMsg('Please Enter Password');
@@ -53,6 +53,8 @@ export default function SignIn(props) {
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
+      ToastAlertMsg('Login failed. Please try again.');
     }
   };
 

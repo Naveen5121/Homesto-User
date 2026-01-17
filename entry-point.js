@@ -77,20 +77,32 @@ export default function EntryPoint({}) {
       userId = await AsyncStorage.getItem('userId');
 
       if (userToken && userId) {
-        const profile = await API.getUserProfile();
+        try {
+          const profile = await API.getUserProfile();
 
-        if (profile.success === 'true') {
-          userProfile = profile.extraData.profile;
-          console.log('Entrypoint ', userProfile);
-        } else {
-          logoutUser();
+          if (profile && profile.success === 'true') {
+            userProfile = profile.extraData.profile;
+            console.log('Entrypoint ', userProfile);
+          } else {
+            // Invalid token, logout user
+            await logoutUser();
+            userToken = null;
+            userId = null;
+          }
+        } catch (profileError) {
+          console.log('Profile fetch error:', profileError);
+          // Continue without profile, don't block app
         }
-        SplashScreen.hide();
-      } else {
-        SplashScreen.hide();
       }
     } catch (e) {
-      console.log(e);
+      console.log('Auth check error:', e);
+    } finally {
+      // Always hide splash screen
+      try {
+        SplashScreen.hide();
+      } catch (err) {
+        console.log('SplashScreen error:', err);
+      }
     }
 
     dispatch({
@@ -103,10 +115,6 @@ export default function EntryPoint({}) {
 
   React.useEffect(() => {
     checkAuthData();
-
-    return () => {
-      checkAuthData();
-    };
   }, []);
 
   const authContext = React.useMemo(

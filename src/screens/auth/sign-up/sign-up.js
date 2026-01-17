@@ -86,13 +86,18 @@ export default function SignUp(props) {
       );
       console.log(data);
 
-      if (data.success === 'true') {
-        ToastAlertMsg(data.extraData);
+      if (data && data.success === 'true') {
+        ToastAlertMsg(data.extraData || 'Registration successful!');
         setIsLoading(false);
         props.navigation.goBack();
+      } else {
+        setIsLoading(false);
+        ToastAlertMsg(data?.msg || 'Registration failed. Please try again.');
       }
     } catch (error) {
-      alert(error);
+      console.log(error);
+      setIsLoading(false);
+      ToastAlertMsg('Registration failed. Please try again.');
     }
   };
 
@@ -103,7 +108,7 @@ export default function SignUp(props) {
         backgroundColor={'transparent'}
         barStyle="dark-content"
       />
-
+      {isLoading && <ActivityLoader isLoading={isLoading} />}
       <ScrollView style={styles.container}>
         <View style={{flex: 1}}>
           {Platform.OS === 'ios' && (
