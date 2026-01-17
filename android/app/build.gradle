@@ -60,9 +60,6 @@ android {
 dependencies {
     implementation("com.facebook.react:react-android")
 
-    implementation project(':react-native-splash-screen')
-    implementation project(':react-native-razorpay')
-
     implementation 'com.facebook.fresco:fresco:2.5.0'
     implementation 'com.facebook.fresco:animated-gif:2.5.0'
 

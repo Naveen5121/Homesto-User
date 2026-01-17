@@ -2,7 +2,6 @@ import * as React from 'react';
 import {StatusBar} from 'react-native';
 import {AuthContext} from './auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SplashScreen from 'react-native-splash-screen';
 import AuthNavigator from './src/navigations/auth-navigator';
 import AppNavigator from './src/navigations/app-navigator';
 import API from './src/action/api';
@@ -96,13 +95,6 @@ export default function EntryPoint({}) {
       }
     } catch (e) {
       console.log('Auth check error:', e);
-    } finally {
-      // Always hide splash screen
-      try {
-        SplashScreen.hide();
-      } catch (err) {
-        console.log('SplashScreen error:', err);
-      }
     }
 
     dispatch({
