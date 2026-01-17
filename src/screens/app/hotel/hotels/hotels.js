@@ -187,23 +187,23 @@ export default function Hotels(props) {
         <View style={styles.infoContainer}>
           <Image
             source={{
-              uri: 'https://www.munnar.com/Great_Escapes_Resort_Munnar/images/Great%20Escapes%20Resorts-Munnar-KErala-India-Banner.jpg',
-            }}
-            style={styles.banner}
-          />
-        </View>
-        {nearByHotels2.length > 0 && (
-          <View style={styles.infoContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.heading}>Nearby Hotels</Text>
-            </View>
-            <View style={{paddingHorizontal: 12.5}}>
-              {hotelList.map((data, i) => (
-                <HotelCard data={data} key={i} />
-              ))}
-            </View>
+            uri: 'https://www.munnar.com/Great_Escapes_Resort_Munnar/images/Great%20Escapes%20Resorts-Munnar-KErala-India-Banner.jpg',
+          }}
+          style={styles.banner}
+        />
+      </View>
+      {hotelList.length > 0 && (
+        <View style={styles.infoContainer}>
+          <View style={styles.flexRow}>
+            <Text style={styles.heading}>Nearby Hotels</Text>
           </View>
-        )}
+          <View style={{paddingHorizontal: 12.5}}>
+            {hotelList.map((data, i) => (
+              <HotelCard data={data} key={i} />
+            ))}
+          </View>
+        </View>
+      )}
 
       
       </ScrollView>
