@@ -521,14 +521,15 @@ const API = {
     try {
       const data = await makeGetRequestWithToken(BASE_URL + '/view_profile');
 
-      if (data.success) {
+      if (data && data.success === 'true') {
         return data;
       } else {
-        console.log('Token Expire');
-        return 0;
+        console.log('Token Expire or profile fetch failed');
+        return { success: 'false', msg: 'Token expired or invalid' };
       }
     } catch (error) {
-      return error.response;
+      console.log('getUserProfile error:', error);
+      return { success: 'false', msg: 'Network error' };
     }
   },
 
