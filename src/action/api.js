@@ -5,7 +5,7 @@ import {
   makePostRequestWithToken,
 } from './apiService';
 
-const BASE_URL = 'https://hotel.easytipsntricks.com/Api';
+const BASE_URL = 'https://admin.homesto.in/Api/';
 
 const API = {
   async setLoginData(phone) {

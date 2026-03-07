@@ -1,4 +1,4 @@
-package com.jooyoo;
+package com.homesto;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

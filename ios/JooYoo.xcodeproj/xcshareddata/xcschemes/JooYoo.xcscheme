@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "JooYoo.app"
-               BlueprintName = "JooYoo"
-               ReferencedContainer = "container:JooYoo.xcodeproj">
+               BuildableName = "Homesto.app"
+               BlueprintName = "Homesto"
+               ReferencedContainer = "container:Homesto.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "JooYooTests.xctest"
-               BlueprintName = "JooYooTests"
-               ReferencedContainer = "container:JooYoo.xcodeproj">
+               BuildableName = "HomestoTests.xctest"
+               BlueprintName = "HomestoTests"
+               ReferencedContainer = "container:Homesto.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "JooYoo.app"
-            BlueprintName = "JooYoo"
-            ReferencedContainer = "container:JooYoo.xcodeproj">
+            BuildableName = "Homesto.app"
+            BlueprintName = "Homesto"
+            ReferencedContainer = "container:Homesto.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "JooYoo.app"
-            BlueprintName = "JooYoo"
-            ReferencedContainer = "container:JooYoo.xcodeproj">
+            BuildableName = "Homesto.app"
+            BlueprintName = "Homesto"
+            ReferencedContainer = "container:Homesto.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -25,7 +25,7 @@ export default function Support() {
           <View style={{flexDirection: 'row', marginVertical: 5}}>
             <Ionicons color={COLORS.PRIMARY} size={20} name={'mail'} />
             <TouchableOpacity>
-              <Text style={styles.content}>{'    '}jooyoo@rooms.com</Text>
+              <Text style={styles.content}>{'    '}homesto@rooms.com</Text>
             </TouchableOpacity>
           </View>
         </View>

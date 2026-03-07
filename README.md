@@ -1,4 +1,4 @@
-# JooYoo - React Native Hotel Booking App
+# Homesto - React Native Hotel Booking App
 
 This is a React Native application for hotel bookings, built with React Native 0.74.5 (stable version).
 
@@ -109,7 +109,7 @@ The APK will be located at `android/app/build/outputs/apk/release/app-release.ap
 
 ### iOS
 
-1. Open `ios/JooYoo.xcworkspace` in Xcode
+1. Open `ios/Homesto.xcworkspace` in Xcode
 2. Select your target device/simulator
 3. Product > Archive
 4. Follow the prompts to distribute your app

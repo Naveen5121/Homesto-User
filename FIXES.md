@@ -43,8 +43,8 @@
 1. `entry-point.js` - Fixed useEffect cleanup, improved error handling
 2. `src/screens/auth/sign-in/sign-in.js` - Added error handling, fixed freeze
 3. `src/screens/auth/sign-up/sign-up.js` - Added ActivityLoader, error handling
-4. `ios/JooYoo/AppDelegate.mm` - Added SplashScreen initialization
-5. `android/app/src/main/java/com/jooyoo/MainActivity.java` - Added try-catch for splash
+4. `ios/homesto/AppDelegate.mm` - Added SplashScreen initialization
+5. `android/app/src/main/java/com/homesto/MainActivity.java` - Added try-catch for splash
 
 ## Testing Checklist
 
