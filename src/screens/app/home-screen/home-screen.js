@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,12 @@ import {
 import styles from './style';
 import PopularHotelCard from '../../../components/popular-hotel-card';
 import HotelCard from '../../../components/hotel-card';
-import {IMAGES} from '../../../constants/images';
-import {useIsFocused} from '@react-navigation/native';
+import { IMAGES } from '../../../constants/images';
+import { useIsFocused } from '@react-navigation/native';
 
 import ToastAlertMsg from '../../../components/toast-alert-msg';
 import ActivityLoader from '../../../components/activity-loader';
-import {AuthContext} from '../../../../auth-context';
+import { AuthContext } from '../../../../auth-context';
 import API from '../../../action/api';
 
 export default function HomeScreen(props) {
@@ -45,13 +45,13 @@ export default function HomeScreen(props) {
       image:
         'https://i.pinimg.com/564x/d8/dd/36/d8dd361e6758f12f8768f48c5f38fb28.jpg',
       title: 'Bus',
-      onPress: () => {},
+      onPress: () => { },
     },
     {
       image:
         'https://upload.wikimedia.org/wikipedia/commons/e/ef/Wilderness_Adventure_Camps.jpg',
       title: 'More',
-      onPress: () => {},
+      onPress: () => { },
     },
   ];
 
@@ -139,8 +139,8 @@ export default function HomeScreen(props) {
       <Animated.ScrollView
         style={styles.container}
         onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: true},
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true },
         )}
         scrollEventThrottle={16}>
         <View style={styles.containerStyle}>
@@ -152,13 +152,13 @@ export default function HomeScreen(props) {
           style={[
             styles.catContainer,
             {
-              transform: [{translateY: boxContainerTranslateY}],
+              transform: [{ translateY: boxContainerTranslateY }],
               opacity: boxContainerOpacity,
             },
           ]}>
           {category.map((data, i) => (
             <TouchableOpacity style={styles.box} key={i} onPress={data.onPress}>
-              <Image style={{height: 70}} source={{uri: data.image}} />
+              <Image style={{ height: 70 }} source={{ uri: data.image }} />
               <View style={styles.titleContainer}>
                 <Text style={styles.title}>{data.title}</Text>
               </View>
@@ -170,7 +170,7 @@ export default function HomeScreen(props) {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{paddingLeft: 5}}>
+            style={{ paddingLeft: 5 }}>
             {hotelCategory.map((data, i) => (
               <View style={styles.subCatCard} key={i}>
                 <Image style={styles.subCatImage} source={IMAGES.LOGO} />
@@ -179,7 +179,7 @@ export default function HomeScreen(props) {
                 </View>
               </View>
             ))}
-            <View style={{marginHorizontal: 10}} />
+            <View style={{ marginHorizontal: 10 }} />
           </ScrollView>
         </View>
 
@@ -188,7 +188,7 @@ export default function HomeScreen(props) {
             <Text style={styles.heading}>HOMESTO's Offer</Text>
           </View>
           <ScrollView
-            style={{paddingLeft: 15}}
+            style={{ paddingLeft: 15 }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}>
             {hotelOffeer.map((item, i) => (
@@ -211,7 +211,7 @@ export default function HomeScreen(props) {
                 </View>
               </TouchableOpacity>
             ))}
-            <View style={{marginHorizontal: 10}} />
+            <View style={{ marginHorizontal: 10 }} />
           </ScrollView>
         </View>
         <View style={styles.infoContainer}>
@@ -224,7 +224,7 @@ export default function HomeScreen(props) {
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.flexRow}>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.heading}>Hotelio Stays</Text>
               <Text style={styles.subHeading}>
                 Top Rated affordable properties
@@ -234,7 +234,7 @@ export default function HomeScreen(props) {
               <Text style={styles.seeall}>Know More</Text>
             </TouchableOpacity>
           </View>
-          <View style={{paddingHorizontal: 17}}>
+          <View style={{ paddingHorizontal: 17 }}>
             <Text style={styles.facility}>✅ 100 % Money Back Gurantee*</Text>
             <Text style={styles.facility}>✅ Hassle-Free Check-In</Text>
 
@@ -248,14 +248,14 @@ export default function HomeScreen(props) {
             <Text style={styles.heading}>Today's Offer</Text>
           </View>
           <ScrollView
-            style={{paddingLeft: 15}}
+            style={{ paddingLeft: 15 }}
             horizontal={true}
             showsHorizontalScrollIndicator={false}>
             {offers.map((item, i) => (
               <TouchableOpacity style={styles.offerContainer} key={i}>
                 <TouchableHighlight>
                   <Image
-                    source={{uri: item.image}}
+                    source={{ uri: item.image }}
                     style={styles.packageImage}
                   />
                 </TouchableHighlight>
@@ -270,7 +270,7 @@ export default function HomeScreen(props) {
                 </View>
               </TouchableOpacity>
             ))}
-            <View style={{marginHorizontal: 10}} />
+            <View style={{ marginHorizontal: 10 }} />
           </ScrollView>
         </View>
       </Animated.ScrollView>

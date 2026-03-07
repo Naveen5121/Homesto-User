@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,51 +8,71 @@ import {
   TouchableHighlight,
   Modal,
   TextInput,
+  FlatList,
+  Dimensions,
 } from 'react-native';
 import styles from './style';
 import PopularHotelCard from '../../../../components/popular-hotel-card';
 import Feather from 'react-native-vector-icons/Feather';
 import HotelCard from '../../../../components/hotel-card';
-import {COLORS} from '../../../../constants/colors';
+import { COLORS } from '../../../../constants/colors';
 import CalendarPicker from 'react-native-calendar-picker';
-import {Divider} from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import moment from 'moment';
-import {FONT_FAMILY} from '../../../../constants/font-family';
-import {useIsFocused} from '@react-navigation/native';
+import { FONT_FAMILY } from '../../../../constants/font-family';
+import { useIsFocused } from '@react-navigation/native';
 
 import ToastAlertMsg from '../../../../components/toast-alert-msg';
 import ActivityLoader from '../../../../components/activity-loader';
 import GetLocation from 'react-native-get-location';
-import {ICONS} from '../../../../constants/icons';
+import { ICONS } from '../../../../constants/icons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {AuthContext} from '../../../../../auth-context';
+import { AuthContext } from '../../../../../auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../../../action/api';
+import SearchTextbox from '../../../../components/search-textbox';
+import BannerCarousel from '../../../../components/banner-carousel';
+const { width } = Dimensions.get('window');
+
+const bannerData = [
+  {
+    image: 'https://munnar.com/uploads/hotel_photos/1757765796_68c560a4e2d63.webp',
+    description: 'Special summer discount on all deluxe rooms'
+  },
+  {
+    image: 'https://www.munnar.com/Great_Escapes_Resort_Munnar/images/Great%20Escapes%20Resorts-Munnar-KErala-India-Banner.jpg',
+    description: 'Experience luxury in the heart of nature'
+  },
+  {
+    image: 'https://munnar.com/uploads/hotel_photos/1757765796_68c560a4e2d63.webp',
+    description: 'Book now and get free breakfast for two'
+  },
+];
 
 export default function Hotels(props) {
   const isVisible = useIsFocused();
-  const {updateUserProfile, signOut} =
+  const { updateUserProfile, signOut } =
     React.useContext(AuthContext).authContext;
   const [isLoading, setIsLoading] = useState(false);
   const [hotelList, setHotelList] = useState([]);
+  const [filteredHotels, setFilteredHotels] = useState([]);
 
-  const [isDataLoading, setIsDataLoading] = useState(true);
-
-  const [nearByHotels, setNearByHotels] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
-  const [location, setLocation] = useState(null);
-  const [hotels, setHotels] = useState([{}, {}]);
-
-  const [coordinates, setCoordinates] = useState(null);
-
-  const [room, setRoom] = useState(1);
   const [adult, setAdult] = useState(1);
-  const [hotelOffeer, setHotelOffer] = useState([
-    {title: 'get Your InstantOffer T&c apply'},
-    {},
-    {},
-  ]);
+  const [room, setRoom] = useState(1);
+
+  useEffect(() => {
+    if (searchValue.trim() === '') {
+      setFilteredHotels(hotelList);
+    } else {
+      const filtered = hotelList.filter(item =>
+        item.hotel_name?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.city_name?.toLowerCase().includes(searchValue.toLowerCase())
+      );
+      setFilteredHotels(filtered);
+    }
+  }, [searchValue, hotelList]);
 
   async function fetchData() {
     try {
@@ -62,7 +82,7 @@ export default function Hotels(props) {
       const hotel_list = await API.getHotelList();
 
       if (profile.success === 'true') {
-        updateUserProfile({userProfile: profile.extraData.profile});
+        updateUserProfile({ userProfile: profile.extraData.profile });
       } else {
         await AsyncStorage.removeItem('userId');
         await AsyncStorage.removeItem('accessToken');
@@ -75,10 +95,12 @@ export default function Hotels(props) {
           item => item.category_name === 'Hotel',
         );
         setHotelList(hotels);
+        setFilteredHotels(hotels);
         setIsLoading(false);
       } else {
         ToastAlertMsg('No Records Found');
         setHotelList([]);
+        setFilteredHotels([]);
         setIsLoading(false);
       }
     } catch (error) {
@@ -143,14 +165,21 @@ export default function Hotels(props) {
   return (
     <>
       {isLoading && <ActivityLoader isLoading={isLoading} />}
+      <SearchTextbox
+        title="Search Hotels, Cities..."
+        value={searchValue}
+        onChangeText={setSearchValue}
+        onPress={() => setIsModalVisible(true)}
+        showFilter={false}
+      />
       <ScrollView style={styles.container}>
         <View style={styles.infoContainer}>
           <View style={styles.topOfferBanner}>
             <Text style={styles.bannerTitle}>
               {`HOURLY\n`}
-              <Text style={{fontSize: 12, color: COLORS.BLACK}}>{`STAYS`}</Text>
+              <Text style={{ fontSize: 12, color: COLORS.BLACK }}>{`STAYS`}</Text>
             </Text>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.bannerInfo}>BOOK FOR 3,6 OR 9 HOURS</Text>
               <Text style={styles.bannerSubInfo}>
                 Flexible slots, great savings
@@ -161,10 +190,10 @@ export default function Hotels(props) {
         </View>
 
 
-      
+
         <View style={styles.infoContainer}>
           <View style={styles.flexRow}>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.heading}>HOMESTO Stays</Text>
               <Text style={styles.subHeading}>
                 Top Rated affordable properties
@@ -174,7 +203,7 @@ export default function Hotels(props) {
               <Text style={styles.seeall}>Know More</Text>
             </TouchableOpacity> */}
           </View>
-          <View style={{paddingHorizontal: 17}}>
+          <View style={{ paddingHorizontal: 17 }}>
             <Text style={styles.facility}>✅ 100 % Money Back Gurantee*</Text>
             <Text style={styles.facility}>✅ Hassle-Free Check-In</Text>
 
@@ -184,28 +213,65 @@ export default function Hotels(props) {
           </View>
         </View>
 
-        <View style={styles.infoContainer}>
-          <Image
-            source={{
-            uri: 'https://www.munnar.com/Great_Escapes_Resort_Munnar/images/Great%20Escapes%20Resorts-Munnar-KErala-India-Banner.jpg',
-          }}
-          style={styles.banner}
-        />
-      </View>
-      {hotelList.length > 0 && (
+
+
         <View style={styles.infoContainer}>
           <View style={styles.flexRow}>
-            <Text style={styles.heading}>Nearby Hotels</Text>
+            <Text style={styles.heading}>Exclusive Offers</Text>
           </View>
-          <View style={{paddingHorizontal: 12.5}}>
-            {hotelList.map((data, i) => (
-              <HotelCard data={data} key={i} />
-            ))}
-          </View>
-        </View>
-      )}
+          <BannerCarousel data={bannerData} showPagination={false} interval={3500} />
 
-      
+        </View>
+
+
+
+        {filteredHotels.length > 0 && (
+          <View style={styles.infoContainer}>
+            <View style={styles.flexRow}>
+              <Text style={styles.heading}>Best Deals</Text>
+            </View>
+            <View style={{ paddingHorizontal: 12.5 }}>
+              <FlatList
+                data={filteredHotels}
+                renderItem={({ item }) => <HotelCard showDetails={false} data={item}
+                  imageStyle={{
+                    height: '100%',
+                    width: width - 30
+                  }}
+                  imageContainer={{
+                    height: 150,
+                  }}
+                  cardStyle={{
+
+                    width: width - 150
+                  }}
+
+                />}
+                horizontal
+                keyExtractor={(item, index) => index.toString()}
+                showsHorizontalScrollIndicator={false}
+              />
+              {/* {filteredHotels.map((data, i) => (
+                <HotelCard data={data} key={i} />
+              ))} */}
+            </View>
+          </View>
+        )}
+
+        {filteredHotels.length > 0 && (
+          <View style={styles.infoContainer}>
+            <View style={styles.flexRow}>
+              <Text style={styles.heading}>Trendings Hotels</Text>
+            </View>
+            <View style={{ paddingHorizontal: 12.5 }}>
+              {filteredHotels.map((data, i) => (
+                <HotelCard data={data} key={i} />
+              ))}
+            </View>
+          </View>
+        )}
+
+
       </ScrollView>
 
       <Modal
@@ -215,7 +281,7 @@ export default function Hotels(props) {
         visible={isModalVisible}>
         <View style={styles.container}>
           <View style={styles.headerContainer}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <TouchableOpacity
                 onPress={() => setIsModalVisible(!isModalVisible)}>
                 <Feather name="chevron-left" color={COLORS.WHITE} size={22} />
@@ -236,7 +302,7 @@ export default function Hotels(props) {
                     <View style={styles.cancel}>
                       <Image
                         source={ICONS.LOADER}
-                        style={{height: 25, width: 25}}
+                        style={{ height: 25, width: 25 }}
                       />
                     </View>
                   ) : (
@@ -258,9 +324,9 @@ export default function Hotels(props) {
               <TouchableOpacity
                 style={styles.list}
                 key={i}
-                //  onPress={() => selectLoaction(data)}
+              //  onPress={() => selectLoaction(data)}
               >
-                <View style={{flex: 1, marginRight: 10}}>
+                <View style={{ flex: 1, marginRight: 10 }}>
                   <Text style={styles.name} numberOfLines={1}>
                     {data.name}
                   </Text>
@@ -294,8 +360,8 @@ export default function Hotels(props) {
                 fontFamily: FONT_FAMILY.primaryBold,
                 fontSize: 14,
               }}
-              nextTitleStyle={{color: COLORS.DARK_GREY, fontSize: 13}}
-              previousTitleStyle={{color: COLORS.DARK_GREY, fontSize: 13}}
+              nextTitleStyle={{ color: COLORS.DARK_GREY, fontSize: 13 }}
+              previousTitleStyle={{ color: COLORS.DARK_GREY, fontSize: 13 }}
               scrollable={true}
               monthTitleStyle={{
                 color: COLORS.PRIMARY,
@@ -400,7 +466,7 @@ export default function Hotels(props) {
                 </View>
               </View>
 
-              <View style={{paddingVertical: 2.5}} />
+              <View style={{ paddingVertical: 2.5 }} />
             </View>
             <View style={styles.btnContainer}>
               <TouchableOpacity
@@ -412,6 +478,6 @@ export default function Hotels(props) {
           </View>
         </View>
       </Modal>
-    </>
+    </ >
   );
 }

@@ -7,23 +7,23 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import {COLORS} from '../constants/colors';
-import {FONT_FAMILY} from '../constants/font-family';
+import { COLORS } from '../constants/colors';
+import { FONT_FAMILY } from '../constants/font-family';
 import Feather from 'react-native-vector-icons/Feather';
-import {useNavigation} from '@react-navigation/native';
-import {AirbnbRating} from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { AirbnbRating } from '@rneui/themed';
 import ConvertIntoRupees from './convert-in-rupees';
 import CalculateGst from './calculate-gst';
 import ImageLoader from './image-loader';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-export default function HotelCard({data}) {
+export default function HotelCard({ data, showDetails = true, imageStyle, imageContainer, cardStyle }) {
   const navigation = useNavigation();
 
   return (
     <TouchableOpacity
-      style={styles.card}
+      style={[styles.card, cardStyle]}
       onPress={() =>
         navigation.navigate('HotelDetails', {
           hotelId: data.id,
@@ -32,27 +32,30 @@ export default function HotelCard({data}) {
           bookingAmtHrs: data.booking_amt_hr,
         })
       }>
-      <View style={styles.imgContainer}>
+      <View style={[styles.imgContainer, imageContainer]}>
         {data?.gallery?.[0] ? (
-          <ImageLoader image={data.gallery[2]} style={styles.img} />
+          <ImageLoader image={data.gallery[2]} style={[styles.img, imageStyle]} />
         ) : (
           <ImageLoader
             image={'https://via.placeholder.com/150'}
-            style={styles.img}
+            style={[styles.img, imageStyle]}
           />
         )}
       </View>
 
-      <View style={{padding: 10}}>
-        <AirbnbRating
-          size={12}
-          showRating={false}
-          count={5}
-          defaultRating={4}
-          starContainerStyle={{alignSelf: 'flex-start'}}
+      <View style={{ padding: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <AirbnbRating
+            size={12}
+            showRating={false}
+            count={5}
+            defaultRating={4}
+            starContainerStyle={{ alignSelf: 'flex-start' }}
           //onFinishRating={ratingCompleted}
           //  style={{paddingVertical: 10}}
-        />
+          />
+          <Text style={styles.rate}>3.8/5</Text>
+        </View>
         <Text style={styles.hotelName} numberOfLines={1}>
           {data.hotelname}
         </Text>
@@ -61,24 +64,28 @@ export default function HotelCard({data}) {
             <Feather name="map-pin" size={12} color={COLORS.GREY} width={15} />
             {'  ' + data.city_name}
           </Text>
-        </View>
-        <Text style={styles.rate}>3.8/5</Text>
 
-        <Text style={styles.breakfast}>✔ No meals included</Text>
-        <Text style={styles.breakfast}>
-          ✔ Complimentary 1+1 Happy Hours is available
-        </Text>
-        <Text style={styles.breakfast}>
-          ✔ Free Early Check in, Subject to Availability
-        </Text>
-        {/* <Text style={styles.price}>300</Text> */}
-        <Text style={styles.discount}>
-          <Text style={{fontFamily: FONT_FAMILY.primaryBlack}}>
-            {data.booking_amt}
-          </Text>{' '}
-          for <Text style={{fontFamily: FONT_FAMILY.primaryBlack}}>1 room</Text>{' '}
-          per night
-        </Text>
+        </View>
+        {showDetails &&
+          <>
+
+            <Text style={styles.breakfast}>✔ No meals included</Text>
+            <Text style={styles.breakfast}>
+              ✔ Complimentary 1+1 Happy Hours is available
+            </Text>
+            <Text style={styles.breakfast}>
+              ✔ Free Early Check in, Subject to Availability
+            </Text>
+            {/* <Text style={styles.price}>300</Text> */}
+            <Text style={styles.discount}>
+              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack }}>
+                {data.booking_amt}
+              </Text>{' '}
+              for <Text style={{ fontFamily: FONT_FAMILY.primaryBlack }}>1 room</Text>{' '}
+              per night
+            </Text>
+          </>
+        }
       </View>
     </TouchableOpacity>
   );
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2.5,
     borderRadius: 2.5,
     marginTop: 5,
-    marginBottom: 30,
+    // marginBottom: 30,
   },
   flexRow: {
     flexDirection: 'row',
@@ -144,6 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: COLORS.GREY,
     fontFamily: FONT_FAMILY.primary,
+    marginBottom: 10
   },
 
   price: {
