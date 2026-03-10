@@ -19,17 +19,16 @@ export const makeGetRequest = async url => {
     if (!url) {
       throw new Error('No URL');
     }
+    let token = await AsyncStorage.getItem('accessToken');
     //  console.log('make GET Final request = ' + url);
     let controller = new AbortController();
     setTimeout(() => controller.abort(), GET_REQUEST_TIMEOUT);
-    const response = await fetch(
-      url,
-      {signal: controller.signal},
-      constructGetRequestOptions(),
-    );
+    const response = await fetch(url, {
+      ...constructGetRequestOptions(token),
+      signal: controller.signal,
+    });
     const json = await response.json();
     if (json) {
-      //  console.log('http GET OK');
 
       if (
         json.success === RESPONSE_SUCCESS ||
@@ -63,15 +62,17 @@ export const makeGetRequestWithToken = async url => {
     console.log(token);
     let controller = new AbortController();
     setTimeout(() => controller.abort(), GET_REQUEST_TIMEOUT);
-    const response = await fetch(
-      url,
-      constructGetRequestWithTokenOptions(token),
-      {signal: controller.signal},
-    );
+    const response = await fetch(url, {
+      ...constructGetRequestWithTokenOptions(token),
+      signal: controller.signal,
+    });
+
+
 
     // console.log(response);
     const json = await response.json();
 
+    console.log('http GET OK', json);
     // console.log(json);
 
     if (json) {
@@ -99,9 +100,11 @@ export const makeGetRequestWithToken = async url => {
 export const makePostRequest = async (url, payload) => {
   try {
     // console.log('make POST request FINAL= ' + url);
+    let token = await AsyncStorage.getItem('accessToken');
     let controller = new AbortController();
     setTimeout(() => controller.abort(), POST_REQUEST_TIMEOUT);
-    const response = await fetch(url, constructPostRequestOptions(payload), {
+    const response = await fetch(url, {
+      ...constructPostRequestOptions(payload, token),
       signal: controller.signal,
     });
 
@@ -132,13 +135,10 @@ export const makePostRequestWithToken = async (url, payload) => {
     let token = await AsyncStorage.getItem('accessToken');
     let controller = new AbortController();
     setTimeout(() => controller.abort(), POST_REQUEST_TIMEOUT);
-    const response = await fetch(
-      url,
-      constructPostRequestWithTokenOptions(payload, token),
-      {
-        signal: controller.signal,
-      },
-    );
+    const response = await fetch(url, {
+      ...constructPostRequestWithTokenOptions(payload, token),
+      signal: controller.signal,
+    });
     const json = await response.json();
 
     if (

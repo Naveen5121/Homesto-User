@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
+  ToastAndroid,
 } from 'react-native';
 import styles from './style';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {COLORS} from '../../../constants/colors';
+import { COLORS } from '../../../constants/colors';
 import moment from 'moment';
 import AlertMsg from '../../../components/alert-msg';
 
@@ -20,7 +21,9 @@ export default function SelectBookingDetails(props) {
   const [hourlyBooking, setHourlyBooking] = useState(false);
   const [hours, setHours] = useState(3);
 
-  const {hotelDetails, bookingAmt, bookingAmtHrs, offerId} = props.route.params;
+  const { hotelDetails, bookingAmt, bookingAmtHrs, offerId, min_guest, max_guest } = props.route.params;
+  const MIN_GUESTS = parseInt(min_guest) || 1;
+  const MAX_GUESTS = parseInt(max_guest) || 4;
 
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
@@ -88,7 +91,7 @@ export default function SelectBookingDetails(props) {
           />
         )}
 
-        <View style={{flex: 1, margin: 15}}>
+        <View style={{ flex: 1, margin: 15 }}>
           <View style={styles.datesContainer}>
             <TouchableOpacity
               style={styles.dateContainer}
@@ -96,7 +99,7 @@ export default function SelectBookingDetails(props) {
               <Text style={styles.dateHeading}>ADD CHECK-IN DATE</Text>
               <Text style={styles.date}>{checkInDate}</Text>
             </TouchableOpacity>
-            <View style={{width: 0.5, backgroundColor: '#e6e6e6'}} />
+            <View style={{ width: 0.5, backgroundColor: '#e6e6e6' }} />
             <TouchableOpacity
               style={styles.dateContainer}
               disabled={hourlyBooking ? true : false}
@@ -117,7 +120,15 @@ export default function SelectBookingDetails(props) {
               <View style={styles.toggleBtnContainer}>
                 <TouchableOpacity
                   style={styles.toggleBtn}
-                  onPress={() => adult > 1 && setAdult(adult - 1)}>
+                  onPress={() => {
+                    if (adult > 1) {
+                      if (adult + children - 1 >= MIN_GUESTS) {
+                        setAdult(adult - 1);
+                      } else {
+                        ToastAndroid.show(`Minimum ${MIN_GUESTS} guest(s) required`, ToastAndroid.SHORT);
+                      }
+                    }
+                  }}>
                   <Ionicons
                     color={COLORS.BLACK}
                     name="remove-outline"
@@ -127,12 +138,18 @@ export default function SelectBookingDetails(props) {
                 <Text style={styles.qty}>{adult}</Text>
                 <TouchableOpacity
                   style={styles.toggleBtn}
-                  onPress={() => setAdult(adult + 1)}>
+                  onPress={() => {
+                    if (adult + children + 1 <= MAX_GUESTS) {
+                      setAdult(adult + 1);
+                    } else {
+                      ToastAndroid.show(`Maximum ${MAX_GUESTS} guests allowed`, ToastAndroid.SHORT);
+                    }
+                  }}>
                   <Ionicons color={COLORS.BLACK} name="add-outline" size={16} />
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={{paddingVertical: 2.5}} />
+            <View style={{ paddingVertical: 2.5 }} />
             <View style={styles.roomsContainer}>
               <TouchableOpacity style={styles.dateContainer}>
                 <Text style={styles.guestTitle}>Children</Text>
@@ -142,7 +159,15 @@ export default function SelectBookingDetails(props) {
               <View style={styles.toggleBtnContainer}>
                 <TouchableOpacity
                   style={styles.toggleBtn}
-                  onPress={() => children > 0 && setChildren(children - 1)}>
+                  onPress={() => {
+                    if (children > 0) {
+                      if (adult + children - 1 >= MIN_GUESTS) {
+                        setChildren(children - 1);
+                      } else {
+                        ToastAndroid.show(`Minimum ${MIN_GUESTS} guest(s) required`, ToastAndroid.SHORT);
+                      }
+                    }
+                  }}>
                   <Ionicons
                     color={COLORS.BLACK}
                     name="remove-outline"
@@ -152,7 +177,13 @@ export default function SelectBookingDetails(props) {
                 <Text style={styles.qty}>{children}</Text>
                 <TouchableOpacity
                   style={styles.toggleBtn}
-                  onPress={() => setChildren(children + 1)}>
+                  onPress={() => {
+                    if (adult + children + 1 <= MAX_GUESTS) {
+                      setChildren(children + 1);
+                    } else {
+                      ToastAndroid.show(`Maximum ${MAX_GUESTS} guests allowed`, ToastAndroid.SHORT);
+                    }
+                  }}>
                   <Ionicons color={COLORS.BLACK} name="add-outline" size={16} />
                 </TouchableOpacity>
               </View>

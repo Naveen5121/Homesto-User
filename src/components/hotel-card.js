@@ -18,7 +18,7 @@ import ImageLoader from './image-loader';
 
 const { width } = Dimensions.get('window');
 
-export default function HotelCard({ data, showDetails = true, imageStyle, imageContainer, cardStyle }) {
+export default function HotelCard({ data, showDetails = true, imageStyle, imageContainer, cardStyle, checkInDate, checkOutDate, noOfAdults, noOfRooms, noOfChildren }) {
   const navigation = useNavigation();
 
   return (
@@ -30,6 +30,11 @@ export default function HotelCard({ data, showDetails = true, imageStyle, imageC
           hotelName: data.hotelname,
           bookingAmt: data.booking_amt,
           bookingAmtHrs: data.booking_amt_hr,
+          checkInDate,
+          checkOutDate,
+          noOfAdults,
+          noOfRooms,
+          noOfChildren
         })
       }>
       <View style={[styles.imgContainer, imageContainer]}>

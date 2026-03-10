@@ -15,9 +15,12 @@ const REQUEST_METHOD_POST = 'POST';
 const REQUEST_HEADER_JSON = 'application/json';
 const REQUEST_HEADER_CONTENT_KEY = 'Content-Type';
 
-export const constructGetRequestOptions = () => {
+export const constructGetRequestOptions = token => {
   var requestHeaders = new Headers();
   requestHeaders.append(REQUEST_HEADER_CONTENT_KEY, REQUEST_HEADER_JSON);
+  if (token) {
+    requestHeaders.append('Authorization', token);
+  }
   return {
     method: REQUEST_METHOD_GET,
     headers: requestHeaders,
@@ -41,9 +44,12 @@ function getFormData(object) {
   return formData;
 }
 
-export const constructPostRequestOptions = payload => {
+export const constructPostRequestOptions = (payload, token) => {
   var requestHeaders = new Headers();
   //requestHeaders.append(REQUEST_HEADER_CONTENT_KEY, REQUEST_HEADER_JSON);
+  if (token) {
+    requestHeaders.append('Authorization', token);
+  }
   const formdata = getFormData(payload);
 
   return {

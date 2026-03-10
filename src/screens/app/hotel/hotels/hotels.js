@@ -60,6 +60,7 @@ export default function Hotels(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
   const [adult, setAdult] = useState(1);
+  const [children, setChildren] = useState(0);
   const [room, setRoom] = useState(1);
 
   useEffect(() => {
@@ -67,7 +68,7 @@ export default function Hotels(props) {
       setFilteredHotels(hotelList);
     } else {
       const filtered = hotelList.filter(item =>
-        item.hotel_name?.toLowerCase().includes(searchValue.toLowerCase()) ||
+        item.hotelname?.toLowerCase().includes(searchValue.toLowerCase()) ||
         item.city_name?.toLowerCase().includes(searchValue.toLowerCase())
       );
       setFilteredHotels(filtered);
@@ -91,7 +92,7 @@ export default function Hotels(props) {
 
       if (hotel_list.success === 'true') {
         // setHotelList(hotel_list.extraData.hot);
-        const hotels = hotel_list.extraData.hot.filter(
+        const hotels = hotel_list.extraData.all_hotels.filter(
           item => item.category_name === 'Hotel',
         );
         setHotelList(hotels);
@@ -245,7 +246,11 @@ export default function Hotels(props) {
 
                     width: width - 150
                   }}
-
+                  checkInDate={selectedStartDate}
+                  checkOutDate={selectedEndDate}
+                  noOfAdults={adult}
+                  noOfRooms={room}
+                  noOfChildren={children}
                 />}
                 horizontal
                 keyExtractor={(item, index) => index.toString()}
@@ -265,7 +270,15 @@ export default function Hotels(props) {
             </View>
             <View style={{ paddingHorizontal: 12.5 }}>
               {filteredHotels.map((data, i) => (
-                <HotelCard data={data} key={i} />
+                <HotelCard
+                  data={data}
+                  key={i}
+                  checkInDate={selectedStartDate}
+                  checkOutDate={selectedEndDate}
+                  noOfAdults={adult}
+                  noOfRooms={room}
+                  noOfChildren={children}
+                />
               ))}
             </View>
           </View>
@@ -428,6 +441,35 @@ export default function Hotels(props) {
                   <TouchableOpacity
                     style={styles.toggleBtn}
                     onPress={() => handleAdultChange(adult + 1)}>
+                    <Ionicons
+                      color={COLORS.BLACK}
+                      name="add-outline"
+                      size={16}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.roomsContainer}>
+                <TouchableOpacity style={styles.dateContainer}>
+                  <Text style={styles.guestTitle}>Children</Text>
+                  <Text style={styles.guestAge}>Number of Children</Text>
+                </TouchableOpacity>
+
+                <View style={styles.toggleBtnContainer}>
+                  <TouchableOpacity
+                    style={styles.toggleBtn}
+                    onPress={() => children > 0 && setChildren(children - 1)}>
+                    <Ionicons
+                      color={COLORS.BLACK}
+                      name="remove-outline"
+                      size={16}
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.qty}>{children}</Text>
+                  <TouchableOpacity
+                    style={styles.toggleBtn}
+                    onPress={() => setChildren(children + 1)}>
                     <Ionicons
                       color={COLORS.BLACK}
                       name="add-outline"
