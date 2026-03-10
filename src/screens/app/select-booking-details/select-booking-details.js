@@ -184,6 +184,9 @@ export default function SelectBookingDetails(props) {
 
   const bookingDays = moment.duration(end.diff(start)).asDays();
 
+  console.log("rooms", rooms);
+
+
   return (
     <>
       <StatusBar translucent={true} barStyle={'light-content'} />

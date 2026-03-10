@@ -157,14 +157,14 @@ export default function HotelDetails(props) {
             <Text style={styles.heading}>Amenities</Text>
 
             <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-              {hotelDetails?.amenities.map((line, j) => (
+              {hotelDetails?.amenities?.map((line, j) => (
                 <View style={styles.facilityRowContainer} key={j}>
                   <View style={styles.faciltyCard}>
-                    <ImageLoader
-                      image={line.image}
+                    {/* <ImageLoader
+                      image={line.img}
                       style={{ width: 20, height: 20, marginRight: 5 }}
-                    />
-                    <Text style={styles.facilityTitle}>{line.name}</Text>
+                    /> */}
+                    <Text style={styles.facilityTitle}>✔ {line.title}</Text>
                   </View>
                 </View>
               ))}
@@ -222,7 +222,7 @@ export default function HotelDetails(props) {
               </Text>
             </View>
           </View>
-          <View style={styles.infoContainer}>
+          {/* <View style={styles.infoContainer}>
             <Text style={styles.heading}>Ratings & reviews</Text>
             <View style={[styles.rowCenter, { marginBottom: 10 }]}>
               <View>
@@ -270,7 +270,7 @@ export default function HotelDetails(props) {
                 <Text style={styles.reviewBtn}>View all 736 reviews</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
       <View style={styles.bottomBtnContainer}>

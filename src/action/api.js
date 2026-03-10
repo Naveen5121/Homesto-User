@@ -408,6 +408,20 @@ const API = {
     }
   },
 
+  async getBanners() {
+    try {
+      const data = await makeGetRequestWithToken(BASE_URL + '/banner');
+
+      if (data.success === 'true') {
+        return data;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      return error.response;
+    }
+  },
+
   async setHotelBooking(
     checkInDate,
     checkOutDate,

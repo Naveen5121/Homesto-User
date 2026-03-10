@@ -11,11 +11,11 @@ export default function BannerCarousel({ data, height = 180, showPagination = tr
 
     const renderItem = ({ item }) => (
         <View style={styles.itemContainer}>
-            <ImageLoader image={'https://munnar.com/uploads/hotel_photos/1757765796_68c560a4e2d63.webp'} style={[styles.image, { height }]} />
+            <ImageLoader image={item.image} style={[styles.image, { height }]} />
             <View style={styles.bannerOverlay}>
                 <View style={styles.descriptionContainer}>
                     <Text style={styles.bannerDescription} numberOfLines={2}>
-                        {item.description || 'Exclusive deals on top-rated stays'}
+                        {item.description || item.hotel_name || 'Exclusive deals on top-rated stays'}
                     </Text>
                 </View>
                 <TouchableOpacity style={styles.bookNowButton} activeOpacity={0.8}>

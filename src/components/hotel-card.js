@@ -67,14 +67,18 @@ export default function HotelCard({ data, showDetails = true, imageStyle, imageC
         <View style={styles.flexRow}>
           <Text style={styles.address}>
             <Feather name="map-pin" size={12} color={COLORS.GREY} width={15} />
-            {'  ' + data.city_name}
+            {'  ' + data.address}
           </Text>
 
         </View>
         {showDetails &&
           <>
-
-            <Text style={styles.breakfast}>✔ No meals included</Text>
+            {/* {
+              data?.amenities?.map((item, index) => (
+                <Text style={styles.breakfast}>✔ {item.name}</Text>
+              ))
+            } */}
+            {/* <Text style={styles.breakfast}>✔ No meals included</Text>
             <Text style={styles.breakfast}>
               ✔ Complimentary 1+1 Happy Hours is available
             </Text>
@@ -83,8 +87,11 @@ export default function HotelCard({ data, showDetails = true, imageStyle, imageC
             </Text>
             {/* <Text style={styles.price}>300</Text> */}
             <Text style={styles.discount}>
-              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack }}>
-                {data.booking_amt}
+              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack, textDecorationLine: 'line-through', color: COLORS.GREY }}>
+                {'₹'}{data.booking_amt}{' '}
+              </Text>{' '}
+              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack, }}>
+                {'₹'}{data.booking_amt}
               </Text>{' '}
               for <Text style={{ fontFamily: FONT_FAMILY.primaryBlack }}>1 room</Text>{' '}
               per night
@@ -168,7 +175,7 @@ const styles = StyleSheet.create({
   },
   discount: {
     fontSize: 13,
-    color: COLORS.BLACK,
+    color: COLORS.PRIMARY,
     fontFamily: FONT_FAMILY.primary,
     marginTop: 5,
   },

@@ -56,6 +56,7 @@ export default function Hotels(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [hotelList, setHotelList] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
+  const [banners, setBanners] = useState([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isRoomModalVisible, setIsRoomModalVisible] = useState(false);
@@ -103,6 +104,11 @@ export default function Hotels(props) {
         setHotelList([]);
         setFilteredHotels([]);
         setIsLoading(false);
+      }
+
+      const banner_res = await API.getBanners();
+      if (banner_res && banner_res.success === 'true') {
+        setBanners(banner_res.extraData.banner);
       }
     } catch (error) {
       console.log(error);
@@ -177,22 +183,21 @@ export default function Hotels(props) {
         <View style={styles.infoContainer}>
           <View style={styles.topOfferBanner}>
             <Text style={styles.bannerTitle}>
-              {`HOURLY\n`}
-              <Text style={{ fontSize: 12, color: COLORS.BLACK }}>{`STAYS`}</Text>
+              {`TOP\n`}
+              <Text style={{ fontSize: 12, color: COLORS.BLACK }}>{`HOTELS`}</Text>
             </Text>
             <View style={{ flex: 1 }}>
-              <Text style={styles.bannerInfo}>BOOK FOR 3,6 OR 9 HOURS</Text>
+              <Text style={styles.bannerInfo}>HOMESTO</Text>
               <Text style={styles.bannerSubInfo}>
-                Flexible slots, great savings
+                Online Room Booking
               </Text>
             </View>
-            {/*   <Feather name="chevron-right" size={16} color={COLORS.BLACK} /> */}
           </View>
         </View>
 
 
 
-        <View style={styles.infoContainer}>
+        {/* <View style={styles.infoContainer}>
           <View style={styles.flexRow}>
             <View style={{ flex: 1 }}>
               <Text style={styles.heading}>HOMESTO Stays</Text>
@@ -200,9 +205,9 @@ export default function Hotels(props) {
                 Top Rated affordable properties
               </Text>
             </View>
-            {/*  <TouchableOpacity>
+            <TouchableOpacity>
               <Text style={styles.seeall}>Know More</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
           <View style={{ paddingHorizontal: 17 }}>
             <Text style={styles.facility}>✅ 100 % Money Back Gurantee*</Text>
@@ -212,7 +217,7 @@ export default function Hotels(props) {
               *If yo do not get clean rooms with TV, AC & Free Wifi
             </Text>
           </View>
-        </View>
+        </View> */}
 
 
 
@@ -220,8 +225,7 @@ export default function Hotels(props) {
           <View style={styles.flexRow}>
             <Text style={styles.heading}>Exclusive Offers</Text>
           </View>
-          <BannerCarousel data={bannerData} showPagination={false} interval={3500} />
-
+          <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
         </View>
 
 
@@ -234,7 +238,7 @@ export default function Hotels(props) {
             <View style={{ paddingHorizontal: 12.5 }}>
               <FlatList
                 data={filteredHotels}
-                renderItem={({ item }) => <HotelCard showDetails={false} data={item}
+                renderItem={({ item }) => <HotelCard showDetails={true} data={item}
                   imageStyle={{
                     height: '100%',
                     width: width - 30
@@ -283,6 +287,13 @@ export default function Hotels(props) {
             </View>
           </View>
         )}
+
+        {/* <View style={styles.infoContainer}>
+          <View style={styles.flexRow}>
+            <Text style={styles.heading}>Exclusive Offers</Text>
+          </View>
+          <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
+        </View> */}
 
 
       </ScrollView>

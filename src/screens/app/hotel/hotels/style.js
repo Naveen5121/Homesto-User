@@ -1,8 +1,8 @@
-import {Dimensions, StatusBar, StyleSheet} from 'react-native';
-import {COLORS} from '../../../../constants/colors';
-import {FONT_FAMILY} from '../../../../constants/font-family';
+import { Dimensions, StatusBar, StyleSheet } from 'react-native';
+import { COLORS } from '../../../../constants/colors';
+import { FONT_FAMILY } from '../../../../constants/font-family';
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
@@ -68,13 +68,14 @@ export default StyleSheet.create({
   },
   bannerInfo: {
     fontSize: 15,
-    color: COLORS.BLACK,
+    color: COLORS.PRIMARY,
     fontFamily: FONT_FAMILY.primaryBlack,
     letterSpacing: 0.5,
   },
   bannerSubInfo: {
     fontSize: 12,
-    color: COLORS.BLACK,
+    color: '#00008B',
+    fontWeight: 'bold',
     fontFamily: FONT_FAMILY.primary,
     marginBottom: 2,
     letterSpacing: 0.5,
