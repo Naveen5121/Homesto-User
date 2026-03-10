@@ -1,7 +1,7 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import {COLORS} from '../../../constants/colors';
-import {FONT_FAMILY} from '../../../constants/font-family';
-const {width} = Dimensions.get('window');
+import { Dimensions, StyleSheet } from 'react-native';
+import { COLORS } from '../../../constants/colors';
+import { FONT_FAMILY } from '../../../constants/font-family';
+const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
@@ -272,5 +272,107 @@ export default StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  roomTypeContainer: {
+    marginTop: 20,
+  },
+
+  roomTypeTitle: {
+    fontSize: 16,
+    fontFamily: FONT_FAMILY.primaryBold,
+    color: COLORS.BLACK,
+    marginBottom: 10,
+  },
+  roomTypeItemContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    // justifyContent: 'space-between',
+  },
+
+  roomTypeItem: {
+    padding: 15,
+    width: '48%',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#e6e6e6',
+    marginBottom: 10,
+    backgroundColor: '#f8f7fc',
+  },
+
+  roomTypeItemSelected: {
+    borderColor: COLORS.PRIMARY,
+    backgroundColor: '#f0eeff',
+    borderWidth: 1.5,
+  },
+
+  roomTypeText: {
+    fontSize: 14,
+    fontFamily: FONT_FAMILY.primaryMedium,
+    color: COLORS.BLACK,
+  },
+
+  roomListContainer: {
+    marginTop: 10,
+  },
+  roomItem: {
+    backgroundColor: COLORS.WHITE,
+    borderRadius: 10,
+    marginBottom: 15,
+    overflow: 'hidden',
+    elevation: 3,
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: '#eee',
+  },
+  roomItemSelected: {
+    borderColor: COLORS.PRIMARY,
+    borderWidth: 2,
+  },
+  roomImage: {
+    width: 100,
+    height: '100%',
+    backgroundColor: '#f5f5f5',
+  },
+  roomInfo: {
+    flex: 1,
+    padding: 10,
+  },
+  roomName: {
+    fontSize: 16,
+    fontFamily: FONT_FAMILY.primaryBold,
+    color: COLORS.BLACK,
+  },
+  roomPrice: {
+    fontSize: 15,
+    fontFamily: FONT_FAMILY.primaryBold,
+    color: COLORS.PRIMARY,
+    marginTop: 5,
+  },
+  roomDetails: {
+    fontSize: 12,
+    fontFamily: FONT_FAMILY.primary,
+    color: COLORS.GREY,
+    marginTop: 2,
+  },
+  roomBadgeContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 5,
+    gap: 5,
+  },
+  roomBadge: {
+    backgroundColor: '#e8f5e9',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  roomBadgeText: {
+    fontSize: 10,
+    color: '#2e7d32',
+    fontFamily: FONT_FAMILY.primaryMedium,
+    textTransform: 'uppercase',
   },
 });

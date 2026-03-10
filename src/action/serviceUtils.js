@@ -40,7 +40,15 @@ export const constructGetRequestWithTokenOptions = token => {
 
 function getFormData(object) {
   const formData = new FormData();
-  Object.keys(object).forEach(key => formData.append(key, object[key]));
+  Object.keys(object).forEach(key => {
+    if (Array.isArray(object[key])) {
+      object[key].forEach(value => {
+        formData.append(key, value);
+      });
+    } else {
+      formData.append(key, object[key]);
+    }
+  });
   return formData;
 }
 

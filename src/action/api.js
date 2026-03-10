@@ -394,6 +394,20 @@ const API = {
     }
   },
 
+  async bookHotel(payload) {
+    try {
+      const data = await makePostRequestWithToken(BASE_URL + '/booking', payload);
+
+      if (data.success === 'true') {
+        return data;
+      } else {
+        return data;
+      }
+    } catch (error) {
+      return error.response;
+    }
+  },
+
   async setHotelBooking(
     checkInDate,
     checkOutDate,
@@ -597,6 +611,40 @@ const API = {
         order_id: id,
         reason: reason,
       });
+
+      if (data.success) {
+        return data;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      return error.response;
+    }
+  },
+
+  async getRoomTypes() {
+    try {
+      const data = await makeGetRequestWithToken(BASE_URL + '/room_type');
+
+      if (data.success) {
+        return data;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      return error.response;
+    }
+  },
+
+  async getRoomsByTypeAndHotelId(hotelId, typeId) {
+    try {
+      const data = await makePostRequestWithToken(
+        BASE_URL + '/room_by_type_hotel_id',
+        {
+          hotel_id: hotelId,
+          type: typeId,
+        },
+      );
 
       if (data.success) {
         return data;
