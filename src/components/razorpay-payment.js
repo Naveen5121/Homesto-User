@@ -1,7 +1,7 @@
-import {COLORS} from '../constants/colors';
+import { COLORS } from '../constants/colors';
 import RazorpayCheckout from 'react-native-razorpay';
-import {IMAGES} from '../constants/images';
-import {Image} from 'react-native';
+import { IMAGES } from '../constants/images';
+import { Image } from 'react-native';
 
 const PAYMENT = {
   async RazorpayPayment(profile, amount) {
@@ -11,10 +11,10 @@ const PAYMENT = {
         description: 'Payment',
         image: Image.resolveAssetSource(IMAGES.LOGO).uri,
         currency: 'INR',
-        key: 'rzp_live_TGnnd4aNSwKhSD',
+        key: 'rzp_live_STrquxcU1Nzk68',
 
         amount: parseFloat(amount) * 100,
-        name: 'Hotelio',
+        name: 'Homesto',
         notify: {
           sms: true,
         },
@@ -23,7 +23,7 @@ const PAYMENT = {
           contact: '+91' + profile.mobileNo,
           name: profile.name,
         },
-        theme: {color: COLORS.PRIMARY},
+        theme: { color: COLORS.PRIMARY },
       };
       const data = await RazorpayCheckout.open(options);
 
@@ -38,4 +38,4 @@ const PAYMENT = {
   },
 };
 
-export {PAYMENT};
+export { PAYMENT };

@@ -375,4 +375,27 @@ export default StyleSheet.create({
     fontFamily: FONT_FAMILY.primaryMedium,
     textTransform: 'uppercase',
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: COLORS.WHITE,
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontFamily: FONT_FAMILY.primaryBold,
+    color: COLORS.BLACK,
+  },
 });

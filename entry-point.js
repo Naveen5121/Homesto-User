@@ -1,12 +1,14 @@
 import * as React from 'react';
-import {StatusBar} from 'react-native';
-import {AuthContext} from './auth-context';
+import { StatusBar } from 'react-native';
+import { AuthContext } from './auth-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthNavigator from './src/navigations/auth-navigator';
 import AppNavigator from './src/navigations/app-navigator';
 import API from './src/action/api';
+import SplashScreen from './src/screens/splash/SplashScreen';
+import RNSplashScreen from 'react-native-splash-screen';
 
-export default function EntryPoint({}) {
+export default function EntryPoint({ }) {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -107,16 +109,18 @@ export default function EntryPoint({}) {
 
   React.useEffect(() => {
     checkAuthData();
+    // Hide native splash screen once JS entry point is mounted
+    RNSplashScreen.hide();
   }, []);
 
   const authContext = React.useMemo(
     () => ({
       signIn: async data => {
-        dispatch({type: 'SIGN_IN', token: data.token, id: data.id});
+        dispatch({ type: 'SIGN_IN', token: data.token, id: data.id });
       },
-      signOut: async () => dispatch({type: 'SIGN_OUT'}),
+      signOut: async () => dispatch({ type: 'SIGN_OUT' }),
       updateUserProfile: async data => {
-        dispatch({type: 'USER_PROFILE', userProfile: data.userProfile});
+        dispatch({ type: 'USER_PROFILE', userProfile: data.userProfile });
       },
       // updateCartCount: async data => {
       //   dispatch({type: 'CART_COUNT', cartCount: data.cartCount});
@@ -140,7 +144,9 @@ export default function EntryPoint({}) {
           userProfile: state.userProfile,
           // cartCount: state.cartCount,
         }}>
-        {state.userToken == null || state.userId == null ? (
+        {state.isLoading ? (
+          <SplashScreen />
+        ) : state.userToken == null || state.userId == null ? (
           <AuthNavigator />
         ) : (
           <AppNavigator />

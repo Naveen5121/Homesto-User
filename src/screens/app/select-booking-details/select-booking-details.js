@@ -7,9 +7,10 @@ import {
   ScrollView,
   Platform,
   ToastAndroid,
+  Modal,
 } from 'react-native';
 import styles from './style';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import CalendarPicker from 'react-native-calendar-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../../constants/colors';
 import moment from 'moment';
@@ -17,6 +18,7 @@ import AlertMsg from '../../../components/alert-msg';
 import API from '../../../action/api';
 import ImageLoader from '../../../components/image-loader';
 import ActivityLoader from '../../../components/activity-loader';
+import { PAYMENT } from '../../../components/razorpay-payment';
 
 export default function SelectBookingDetails(props) {
   const [adult, setAdult] = useState(1);
@@ -91,51 +93,68 @@ export default function SelectBookingDetails(props) {
 
     setLoading(true);
 
-    const totalAmount = hourlyBooking
-      ? parseInt(selectedRoom.price_hour || 0) * hours
-      : parseInt(selectedRoom.price || 0) * (bookingDays === 0 ? 1 : bookingDays);
-
-    const payload = {
-      hotel_id: hotelDetails.id,
-      check_in: checkInDate,
-      check_out: hourlyBooking ? checkInDate : checkOutDate,
-      'no_of_adults[]': [adult],
-      no_of_childs: children,
-      offer_id: offerId || 0,
-      booking_type: hourlyBooking ? 2 : 1,
-      hrs: hourlyBooking ? hours : 0,
-      payment_id: 0,
-      'room_id[]': [selectedRoom.id],
-      total_amt: totalAmount,
-      'room_qty[]': [1],
-    };
-
     try {
-      const res = await API.bookHotel(payload);
-      if (res && res.success === 'true') {
-        ToastAndroid.show('Booking successful!', ToastAndroid.SHORT);
-        props.navigation.navigate('ConfirmBooking', {
-          checkInDate,
-          checkOutDate: hourlyBooking ? checkInDate : checkOutDate,
-          adult,
-          children,
-          hotelDetails,
-          bookingAmt: selectedRoom ? selectedRoom.price : bookingAmt,
-          bookingAmtHrs,
-          offerId,
-          hourlyBooking,
-          hours,
-          bookingDays: bookingDays === 0 ? 1 : bookingDays,
-          selectedRoomType,
-          selectedRoom,
-          totalAmount,
-        });
+      // Fetch user profile for Razorpay prefill
+      const profileRes = await API.getUserProfile();
+      if (!profileRes || profileRes.success !== 'true') {
+        ToastAndroid.show('Failed to fetch user profile', ToastAndroid.SHORT);
+        setLoading(false);
+        return;
+      }
+      const profile = profileRes.extraData.profile;
+
+      const totalAmount = hourlyBooking
+        ? parseInt(selectedRoom.price_hour || 0) * hours
+        : parseInt(selectedRoom.price || 0) * (bookingDays === 0 ? 1 : bookingDays);
+
+      // Open Razorpay Checkout
+      const paymentData = await PAYMENT.RazorpayPayment({ ...profile, mobileNo: profile.phone }, totalAmount);
+
+      if (paymentData && paymentData.razorpay_payment_id) {
+        const payload = {
+          hotel_id: hotelDetails.id,
+          check_in: checkInDate,
+          check_out: hourlyBooking ? checkInDate : checkOutDate,
+          'no_of_adults[]': [adult],
+          no_of_childs: children,
+          offer_id: offerId || 0,
+          booking_type: hourlyBooking ? 2 : 1,
+          hrs: hourlyBooking ? hours : 0,
+          payment_id: paymentData.razorpay_payment_id,
+          'room_id[]': [selectedRoom.id],
+          total_amt: totalAmount,
+          'room_qty[]': [1],
+        };
+
+        const res = await API.bookHotel(payload);
+        if (res && res.success === 'true') {
+          ToastAndroid.show('Booking successful!', ToastAndroid.SHORT);
+          props.navigation.navigate('ConfirmBooking', {
+            checkInDate,
+            checkOutDate: hourlyBooking ? checkInDate : checkOutDate,
+            adult,
+            children,
+            hotelDetails,
+            bookingAmt: selectedRoom ? selectedRoom.price : bookingAmt,
+            bookingAmtHrs,
+            offerId,
+            hourlyBooking,
+            hours,
+            bookingDays: bookingDays === 0 ? 1 : bookingDays,
+            selectedRoomType,
+            selectedRoom,
+            totalAmount,
+            payment_id: paymentData.razorpay_payment_id,
+          });
+        } else {
+          const errorMsg = res && res.extraData ? Object.values(res.extraData).join(', ') : 'Booking failed';
+          ToastAndroid.show(errorMsg, ToastAndroid.LONG);
+        }
       } else {
-        const errorMsg = res && res.extraData ? Object.values(res.extraData).join(', ') : 'Booking failed';
-        ToastAndroid.show(errorMsg, ToastAndroid.LONG);
+        ToastAndroid.show('Payment cancelled or failed', ToastAndroid.SHORT);
       }
     } catch (error) {
-      console.log('Error booking hotel:', error);
+      console.log('Error in booking flow:', error);
       ToastAndroid.show('Something went wrong', ToastAndroid.SHORT);
     } finally {
       setLoading(false);
@@ -149,16 +168,14 @@ export default function SelectBookingDetails(props) {
   const [show, setShow] = useState(false);
   const [checkInDate, setCheckInDate] = useState(moment().format('DD-MM-YYYY'));
 
-  const onChange = (event, selectedDate) => {
-    let currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
+  const onDateChange = (selectedDate) => {
+    if (!selectedDate) return;
+    let currentDate = moment(selectedDate).toDate();
     let date_format = moment(currentDate).format('DD-MM-YYYY');
     setDate(currentDate);
-    if (event.type === 'set') {
-      setCheckInDate(date_format);
-      setCheckOutDate(moment(currentDate).add(1, 'days').format('DD-MM-YYYY'));
-    }
-    //else setCheckInDate(null);
+    setCheckInDate(date_format);
+    setCheckOutDate(moment(currentDate).add(1, 'days').format('DD-MM-YYYY'));
+    setShow(false);
   };
 
   const [date2, setDate2] = useState(new Date());
@@ -167,16 +184,13 @@ export default function SelectBookingDetails(props) {
     moment().add(1, 'days').format('DD-MM-YYYY'),
   );
 
-  const onChangeCheckout = (event, selectedDate) => {
-    let currentDate = selectedDate || date2;
-    setShow2(Platform.OS === 'ios');
+  const onDateChangeCheckout = (selectedDate) => {
+    if (!selectedDate) return;
+    let currentDate = moment(selectedDate).toDate();
     let date_format = moment(currentDate).format('DD-MM-YYYY');
     setDate2(currentDate);
-
-    if (event.type === 'set') {
-      setCheckOutDate(date_format);
-    }
-    //else setCheckInDate(null);
+    setCheckOutDate(date_format);
+    setShow2(false);
   };
 
   var start = moment(checkInDate, 'DD-MM-YYYY');
@@ -192,27 +206,51 @@ export default function SelectBookingDetails(props) {
       <StatusBar translucent={true} barStyle={'light-content'} />
 
       <ScrollView style={styles.container}>
-        {show && (
-          <DateTimePicker
-            value={date}
-            mode={'date'}
-            display="default"
-            onChange={onChange}
-            minimumDate={new Date()}
-          />
-        )}
+        <Modal
+          visible={show}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShow(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Check-In Date</Text>
+                <TouchableOpacity onPress={() => setShow(false)}>
+                  <Ionicons name="close" size={24} color={COLORS.BLACK} />
+                </TouchableOpacity>
+              </View>
+              <CalendarPicker
+                onDateChange={onDateChange}
+                minDate={new Date()}
+                selectedDayColor={COLORS.PRIMARY}
+                selectedDayTextColor={COLORS.WHITE}
+              />
+            </View>
+          </View>
+        </Modal>
 
-        {show2 && (
-          <DateTimePicker
-            value={date2}
-            mode={'date'}
-            display="default"
-            minimumDate={moment(checkInDate, 'DD-MM-YYYY')
-              .add(1, 'days')
-              .toDate()}
-            onChange={onChangeCheckout}
-          />
-        )}
+        <Modal
+          visible={show2}
+          transparent={true}
+          animationType="slide"
+          onRequestClose={() => setShow2(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Check-Out Date</Text>
+                <TouchableOpacity onPress={() => setShow2(false)}>
+                  <Ionicons name="close" size={24} color={COLORS.BLACK} />
+                </TouchableOpacity>
+              </View>
+              <CalendarPicker
+                onDateChange={onDateChangeCheckout}
+                minDate={moment(checkInDate, 'DD-MM-YYYY').add(1, 'days').toDate()}
+                selectedDayColor={COLORS.PRIMARY}
+                selectedDayTextColor={COLORS.WHITE}
+              />
+            </View>
+          </View>
+        </Modal>
 
         <View style={{ flex: 1, margin: 15 }}>
           <View style={styles.datesContainer}>
