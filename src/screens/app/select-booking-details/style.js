@@ -23,6 +23,7 @@ export default StyleSheet.create({
     backgroundColor: COLORS.WHITE,
     elevation: 20,
     padding: 10,
+    paddingBottom: 30,
   },
 
   heading: {

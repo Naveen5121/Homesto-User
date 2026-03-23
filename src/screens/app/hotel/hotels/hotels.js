@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   TextInput,
   FlatList,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import styles from './style';
 import PopularHotelCard from '../../../../components/popular-hotel-card';
@@ -63,18 +64,10 @@ export default function Hotels(props) {
   const [adult, setAdult] = useState(1);
   const [children, setChildren] = useState(0);
   const [room, setRoom] = useState(1);
+  const isSelectionMade = useRef(false);
+  const [noDataMsg, setNoDataMsg] = useState('');
 
-  useEffect(() => {
-    if (searchValue.trim() === '') {
-      setFilteredHotels(hotelList);
-    } else {
-      const filtered = hotelList.filter(item =>
-        item.hotelname?.toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.city_name?.toLowerCase().includes(searchValue.toLowerCase())
-      );
-      setFilteredHotels(filtered);
-    }
-  }, [searchValue, hotelList]);
+  // Removed immediate filtering useEffect as it's now combined with the debounced suggestions effect.
 
   async function fetchData() {
     try {
@@ -169,13 +162,105 @@ export default function Hotels(props) {
     fetchData();
   }, [isVisible]);
 
+  useEffect(() => {
+    if (isSelectionMade.current) {
+      // If we just selected from suggestions, don't run the debounced auto-search
+      // because we already have the specific results from the filter API.
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(() => {
+      // 1. Suggestions (API)
+      if (searchValue && searchValue.trim().length >= 2) {
+        fetchSuggestions(searchValue);
+      } else {
+        setSuggestionsList([]);
+      }
+
+      // 2. Local filtering (Auto Search)
+      if (searchValue.trim() === '') {
+        setFilteredHotels(hotelList);
+      } else {
+        const filtered = hotelList.filter(
+          item =>
+            item.hotelname?.toLowerCase().includes(searchValue.toLowerCase()) ||
+            item.city_name?.toLowerCase().includes(searchValue.toLowerCase()),
+        );
+        setFilteredHotels(filtered);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchValue, hotelList]);
+
+  const fetchSuggestions = async keyword => {
+    setLoading(true);
+    setNoDataMsg('');
+    try {
+      const response = await API.getLocationList(keyword);
+      console.log('response', response);
+      if (
+        response &&
+        response.success === 'true' &&
+        response.extraData &&
+        response.extraData.sub_category
+      ) {
+        setSuggestionsList(response.extraData.sub_category);
+      } else {
+        setSuggestionsList([]);
+        if (response && response.success === 'false' && response.extraData) {
+          setNoDataMsg(response.extraData);
+        }
+      }
+    } catch (error) {
+      console.log('Error fetching suggestions:', error);
+      setSuggestionsList([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const selectLoaction = async item => {
+    isSelectionMade.current = true;
+    setSearchValue(item.name);
+    setSuggestionsList([]);
+    setIsModalVisible(false);
+    setIsLoading(true);
+
+    try {
+      // type: 0 => city, type: 1 => state
+      const city_id = item.type == 0 ? item.id : 0;
+      const state_id = item.type == 1 ? item.id : 0;
+
+      const response = await API.getHotelsByFilter(city_id, state_id);
+
+      if (response && response.success === 'true' && response.extraData) {
+        setHotelList(response.extraData);
+        setFilteredHotels(response.extraData);
+      } else {
+        setHotelList([]);
+        setFilteredHotels([]);
+        ToastAlertMsg('No Hotels Found for this location');
+      }
+    } catch (error) {
+      console.log('Error filtering hotels by suggestion:', error);
+      ToastAlertMsg('Error fetching hotels');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
       {isLoading && <ActivityLoader isLoading={isLoading} />}
       <SearchTextbox
         title="Search Hotels, Cities..."
         value={searchValue}
-        onChangeText={setSearchValue}
+        onChangeText={text => {
+          isSelectionMade.current = false;
+          setNoDataMsg('');
+          setSearchValue(text);
+        }}
         onPress={() => setIsModalVisible(true)}
         showFilter={false}
       />
@@ -221,12 +306,7 @@ export default function Hotels(props) {
 
 
 
-        <View style={styles.infoContainer}>
-          <View style={styles.flexRow}>
-            <Text style={styles.heading}>Exclusive Offers</Text>
-          </View>
-          <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
-        </View>
+
 
 
 
@@ -266,6 +346,13 @@ export default function Hotels(props) {
             </View>
           </View>
         )}
+
+        <View style={styles.infoContainer}>
+          <View style={styles.flexRow}>
+            <Text style={styles.heading}>Exclusive Offers</Text>
+          </View>
+          <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
+        </View>
 
         {filteredHotels.length > 0 && (
           <View style={styles.infoContainer}>
@@ -316,7 +403,12 @@ export default function Hotels(props) {
                 <TextInput
                   style={styles.input}
                   placeholder="Search by city name or pincode"
-                  defaultValue={searchValue}
+                  value={searchValue}
+                  onChangeText={text => {
+                    isSelectionMade.current = false;
+                    setNoDataMsg('');
+                    setSearchValue(text);
+                  }}
                   autoFocus={true}
                   placeholderTextColor={COLORS.GREY}
                 />
@@ -324,18 +416,17 @@ export default function Hotels(props) {
                 {searchValue.toString().trim().length > 0 &&
                   (loading ? (
                     <View style={styles.cancel}>
-                      <Image
-                        source={ICONS.LOADER}
-                        style={{ height: 25, width: 25 }}
-                      />
+                      <ActivityIndicator size="small" color={COLORS.PRIMARY} />
                     </View>
                   ) : (
                     <TouchableOpacity
                       // style={styles.cancel}
-                      onPress={() => [
-                        setSearchValue(''),
-                        setSuggestionsList([]),
-                      ]}>
+                      onPress={() => {
+                        isSelectionMade.current = false;
+                        setNoDataMsg('');
+                        setSearchValue('');
+                        setSuggestionsList([]);
+                      }}>
                       <Feather name="x" size={19} color={COLORS.PRIMARY} />
                     </TouchableOpacity>
                   ))}
@@ -343,13 +434,20 @@ export default function Hotels(props) {
             </View>
           </View>
 
-          <View>
-            {suggestionsList.map((data, i) => (
+          {loading && suggestionsList.length === 0 ? (
+            <View style={{ marginTop: 20 }}>
+              <ActivityIndicator size="large" color={COLORS.PRIMARY} />
+            </View>
+          ) : noDataMsg ? (
+            <View style={{ marginTop: 20, alignItems: 'center' }}>
+              <Text style={{ color: COLORS.GREY, fontFamily: FONT_FAMILY.primary }}>{noDataMsg}</Text>
+            </View>
+          ) : (
+            suggestionsList.map((data, i) => (
               <TouchableOpacity
                 style={styles.list}
                 key={i}
-              //  onPress={() => selectLoaction(data)}
-              >
+                onPress={() => selectLoaction(data)}>
                 <View style={{ flex: 1, marginRight: 10 }}>
                   <Text style={styles.name} numberOfLines={1}>
                     {data.name}
@@ -360,8 +458,8 @@ export default function Hotels(props) {
                 </View>
                 <Feather name="arrow-up-left" size={16} color={COLORS.BLACK} />
               </TouchableOpacity>
-            ))}
-          </View>
+            ))
+          )}
         </View>
       </Modal>
       <Modal

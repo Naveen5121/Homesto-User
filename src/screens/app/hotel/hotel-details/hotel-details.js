@@ -1,4 +1,4 @@
-import { View, ScrollView, TouchableOpacity, Image, Text } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, Text, Linking } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
@@ -122,7 +122,21 @@ export default function HotelDetails(props) {
               defaultRating={4}
               starContainerStyle={{ alignSelf: 'flex-start' }}
             />
-            <Text style={styles.hotelTitle}>{hotelDetails?.hotelname}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={styles.hotelTitle}>{hotelDetails?.hotelname}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(hotelDetails.g_map_link).catch(err =>
+                    console.error("Couldn't load page", err),
+                  );
+                }}
+              >
+                <Text style={{ color: COLORS.RED }}>
+                  <Feather name="map-pin" color={COLORS.RED} size={14} width={20} /> {' '}
+                  Show in map
+                </Text>
+              </TouchableOpacity>
+            </View>
             <View style={styles.locationRow}>
               <Text style={styles.locationName}>
                 <Feather
@@ -143,6 +157,7 @@ export default function HotelDetails(props) {
                   'DD MMM, ddd',
                 )} | ${adults} Adult${children > 0 ? `, ${children} Child` : ''} | ${rooms} Room | ${hotelDetails?.room_type_room?.[0]?.room?.[0]?.min_no_guest || 1}-${hotelDetails?.room_type_room?.[0]?.room?.[0]?.max_no_guest || 4} Guests`}
               </Text>
+
               {/* <TouchableOpacity style={styles.editBtn}>
                 <Text style={styles.editBtnTxt}>Edit</Text>
               </TouchableOpacity> */}

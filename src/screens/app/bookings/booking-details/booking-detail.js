@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,14 @@ import styles from './style';
 import ActivityLoader from '../../../../components/activity-loader';
 import API from '../../../../action/api';
 import AlertMsg from '../../../../components/alert-msg';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-import {Divider} from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 import moment from 'moment';
 import HotelImagesCarousel from '../../../../components/hotel-images-carousel';
 
 export default function BookingsDetails(props) {
-  const {orderId, isShowCancel} = props.route.params;
+  const { orderId, isShowCancel } = props.route.params;
 
   const [showCancel, setShowCancel] = useState(isShowCancel);
 
@@ -77,9 +77,9 @@ export default function BookingsDetails(props) {
       bookingDetails.booking_type === '1'
         ? bookingDetails.hrs
         : calculateBookingDays(
-            bookingDetails.check_in_date,
-            bookingDetails.check_out_date,
-          );
+          bookingDetails.check_in_date,
+          bookingDetails.check_out_date,
+        );
 
     const totalAmount = parseInt(amount) * parseInt(bookingDays);
 
@@ -104,12 +104,12 @@ export default function BookingsDetails(props) {
               }))}
             />
 
-            <View style={{marginTop: 10}}>
+            <View style={{ marginTop: 10 }}>
               <View style={styles.infoContainer}>
                 <Text style={styles.hotelName}>
                   {bookingDetails.hotel_name}
                 </Text>
-                <Divider style={{marginVertical: 10}} />
+                <Divider style={{ marginVertical: 10 }} />
                 <Text style={styles.hotelAmount}>
                   ₹{' '}
                   {bookingDetails.booking_type === '1'
@@ -121,11 +121,11 @@ export default function BookingsDetails(props) {
                   {bookingDetails.state}
                 </Text>
                 <TouchableOpacity
-                // onPress={() => {
-                //   Linking.openURL(bookingDetails.g_map_link).catch(err =>
-                //     console.error("Couldn't load page", err),
-                //   );
-                // }}
+                  onPress={() => {
+                    Linking.openURL(bookingDetails.g_map_link).catch(err =>
+                      console.error("Couldn't load page", err),
+                    );
+                  }}
                 >
                   <Text style={styles.map}>Show in map</Text>
                 </TouchableOpacity>
@@ -145,7 +145,7 @@ export default function BookingsDetails(props) {
 
               <View style={styles.infoContainer}>
                 <Text style={styles.heading}>Booking Details</Text>
-                <Divider style={{marginVertical: 10}} />
+                <Divider style={{ marginVertical: 10 }} />
 
                 <View style={styles.infoList}>
                   <Text style={styles.infoHeading}>Booking ID</Text>

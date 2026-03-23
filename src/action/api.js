@@ -224,6 +224,23 @@ const API = {
     }
   },
 
+  async getHotelsByFilter(cityId, stateId) {
+    try {
+      const data = await makePostRequestWithToken(BASE_URL + '/filter', {
+        city_id: cityId,
+        state_id: stateId,
+      });
+
+      if (data.success) {
+        return data;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      return error.response;
+    }
+  },
+
   async setAddHotel(
     hotelName,
     addr,

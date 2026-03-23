@@ -39,7 +39,7 @@ export default function HotelCard({ data, showDetails = true, imageStyle, imageC
       }>
       <View style={[styles.imgContainer, imageContainer]}>
         {data?.gallery?.[0] ? (
-          <ImageLoader image={data.gallery[2]} style={[styles.img, imageStyle]} />
+          <ImageLoader image={data.gallery[0]} style={[styles.img, imageStyle]} />
         ) : (
           <ImageLoader
             image={'https://via.placeholder.com/150'}
@@ -87,8 +87,8 @@ export default function HotelCard({ data, showDetails = true, imageStyle, imageC
             </Text>
             {/* <Text style={styles.price}>300</Text> */}
             <Text style={styles.discount}>
-              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack, textDecorationLine: 'line-through', color: COLORS.GREY }}>
-                {'₹'}{data.booking_amt}{' '}
+              <Text style={{ fontFamily: FONT_FAMILY.primaryBlack, textDecorationLine: 'line-through', color: COLORS.BLACK }}>
+                {'₹'}{data.booking_price}{' '}
               </Text>{' '}
               <Text style={{ fontFamily: FONT_FAMILY.primaryBlack, }}>
                 {'₹'}{data.booking_amt}
