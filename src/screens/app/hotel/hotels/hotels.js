@@ -11,6 +11,7 @@ import {
   FlatList,
   Dimensions,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import styles from './style';
 import PopularHotelCard from '../../../../components/popular-hotel-card';
@@ -55,8 +56,11 @@ export default function Hotels(props) {
   const { updateUserProfile, signOut } =
     React.useContext(AuthContext).authContext;
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [hotelList, setHotelList] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
+  const [featuredHotels, setFeaturedHotels] = useState([]);
+  const [trendingHotels, setTrendingHotels] = useState([]);
   const [banners, setBanners] = useState([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -89,6 +93,8 @@ export default function Hotels(props) {
         const hotels = hotel_list.extraData.all_hotels.filter(
           item => item.category_name === 'Hotel',
         );
+        setFeaturedHotels(hotel_list.extraData.featured);
+        setTrendingHotels(hotel_list.extraData.trending);
         setHotelList(hotels);
         setFilteredHotels(hotels);
         setIsLoading(false);
@@ -107,6 +113,12 @@ export default function Hotels(props) {
       console.log(error);
     }
   }
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchData();
+    setRefreshing(false);
+  };
 
   const handleAdultChange = newAdultCount => {
     const calculatedRooms = Math.ceil(newAdultCount / 3);
@@ -264,7 +276,11 @@ export default function Hotels(props) {
         onPress={() => setIsModalVisible(true)}
         showFilter={false}
       />
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.infoContainer}>
           <View style={styles.topOfferBanner}>
             <Text style={styles.bannerTitle}>
@@ -310,14 +326,14 @@ export default function Hotels(props) {
 
 
 
-        {filteredHotels.length > 0 && (
+        {featuredHotels?.length > 0 && (
           <View style={styles.infoContainer}>
             <View style={styles.flexRow}>
-              <Text style={styles.heading}>Best Deals</Text>
+              <Text style={styles.heading}>Featured Hotels</Text>
             </View>
             <View style={{ paddingHorizontal: 12.5 }}>
               <FlatList
-                data={filteredHotels}
+                data={featuredHotels}
                 renderItem={({ item }) => <HotelCard showDetails={true} data={item}
                   imageStyle={{
                     height: '100%',
@@ -354,10 +370,30 @@ export default function Hotels(props) {
           <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
         </View>
 
-        {filteredHotels.length > 0 && (
+        {trendingHotels?.length > 0 && (
           <View style={styles.infoContainer}>
             <View style={styles.flexRow}>
               <Text style={styles.heading}>Trendings Hotels</Text>
+            </View>
+            <View style={{ paddingHorizontal: 12.5 }}>
+              {trendingHotels.map((data, i) => (
+                <HotelCard
+                  data={data}
+                  key={i}
+                  checkInDate={selectedStartDate}
+                  checkOutDate={selectedEndDate}
+                  noOfAdults={adult}
+                  noOfRooms={room}
+                  noOfChildren={children}
+                />
+              ))}
+            </View>
+          </View>
+        )}
+        {filteredHotels?.length > 0 && (
+          <View style={styles.infoContainer}>
+            <View style={styles.flexRow}>
+              <Text style={styles.heading}>Other Hotels</Text>
             </View>
             <View style={{ paddingHorizontal: 12.5 }}>
               {filteredHotels.map((data, i) => (

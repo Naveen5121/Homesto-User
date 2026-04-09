@@ -141,6 +141,9 @@ export const makePostRequestWithToken = async (url, payload) => {
     });
     const json = await response.json();
 
+    console.log('http POST URL', url);
+    console.log('http POST OK', json);
+
     if (
       json.success === RESPONSE_SUCCESS ||
       json.success === RESPONSE_FAILURE

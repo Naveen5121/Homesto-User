@@ -677,6 +677,12 @@ const API = {
         },
       );
 
+      console.log('rooms ==>', data);
+      console.log('payload ==>', {
+        hotel_id: hotelId,
+        type: typeId,
+      });
+
       if (data.success) {
         return data;
       } else {
