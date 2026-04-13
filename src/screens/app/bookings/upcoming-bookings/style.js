@@ -50,9 +50,32 @@ export default StyleSheet.create({
     fontSize: 13,
     flex: 1,
   },
-  status: {
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 2,
+  },
+  statusBadge: {
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+  },
+  statusText: {
+    fontSize: 10,
     fontFamily: FONT_FAMILY.primaryMedium,
-    color: 'green',
+  },
+  roomDetail: {
+    fontFamily: FONT_FAMILY.primary,
+    color: COLORS.GREY,
+    fontSize: 11,
+    marginTop: 2,
+  },
+  total: {
+    fontFamily: FONT_FAMILY.primaryBold,
+    color: COLORS.PRIMARY,
     fontSize: 14,
+    marginTop: 4,
   },
 });

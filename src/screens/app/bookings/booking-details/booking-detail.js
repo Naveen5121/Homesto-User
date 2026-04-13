@@ -110,12 +110,12 @@ export default function BookingsDetails(props) {
                   {bookingDetails.hotel_name}
                 </Text>
                 <Divider style={{ marginVertical: 10 }} />
-                <Text style={styles.hotelAmount}>
+                {/* <Text style={styles.hotelAmount}>
                   ₹{' '}
                   {bookingDetails.booking_type === '1'
                     ? `${bookingDetails.booking_amt_hr} per hour`
                     : `${bookingDetails.booking_price} per night`}
-                </Text>
+                </Text> */}
                 <Text style={styles.subheading}>
                   {bookingDetails.address}, {bookingDetails.city},{' '}
                   {bookingDetails.state}
@@ -193,7 +193,7 @@ export default function BookingsDetails(props) {
 
                 <View style={styles.infoList}>
                   <Text style={styles.infoHeading}>Total Amount</Text>
-                  <Text style={styles.info}>₹ {calculateTotalAmount()}/-</Text>
+                  <Text style={styles.info}>₹ {bookingDetails.total_amt}</Text>
                 </View>
 
                 <View style={styles.infoList}>

@@ -392,7 +392,6 @@ const API = {
   },
 
   async getHotelDetailById(id) {
-    console.log(id);
     try {
       const data = await makePostRequestWithToken(
         BASE_URL + '/hotel_detail_by_id',
@@ -401,6 +400,8 @@ const API = {
         },
       );
 
+      console.log('get hotel detail by id', data, id);
+      console.log('get hotel detail by id', BASE_URL + '/hotel_detail_by_id');
       if (data.success) {
         return data;
       } else {
