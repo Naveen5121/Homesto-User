@@ -207,11 +207,11 @@ const API = {
     }
   },
 
-  async getFilterData(category, location) {
+  async getFilterData(category = 1, location) {
     try {
       const data = await makePostRequestWithToken(BASE_URL + '/filter', {
         category,
-        location,
+        city: location,
       });
 
       if (data.success) {
@@ -227,8 +227,9 @@ const API = {
   async getHotelsByFilter(cityId, stateId) {
     try {
       const data = await makePostRequestWithToken(BASE_URL + '/filter', {
-        city_id: cityId,
-        state_id: stateId,
+        category: 1,
+        city: cityId,
+        state: stateId,
       });
 
       if (data.success) {

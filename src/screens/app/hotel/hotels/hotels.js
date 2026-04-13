@@ -159,6 +159,8 @@ export default function Hotels(props) {
 
   const [suggestionsList, setSuggestionsList] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchedCity, setSearchedCity] = useState('');
 
   const minDate = new Date(); // Today
 
@@ -235,23 +237,18 @@ export default function Hotels(props) {
   const selectLoaction = async item => {
     isSelectionMade.current = true;
     setSearchValue(item.name);
+    setSearchedCity(item.name);
     setSuggestionsList([]);
     setIsModalVisible(false);
     setIsLoading(true);
 
     try {
-      // type: 0 => city, type: 1 => state
-      const city_id = item.type == 0 ? item.id : 0;
-      const state_id = item.type == 1 ? item.id : 0;
-
-      const response = await API.getHotelsByFilter(city_id, state_id);
+      const response = await API.getHotelsByFilter(item.city_id, item.state_id);
 
       if (response && response.success === 'true' && response.extraData) {
-        setHotelList(response.extraData);
-        setFilteredHotels(response.extraData);
+        setSearchResults(response.extraData);
       } else {
-        setHotelList([]);
-        setFilteredHotels([]);
+        setSearchResults([]);
         ToastAlertMsg('No Hotels Found for this location');
       }
     } catch (error) {
@@ -260,6 +257,15 @@ export default function Hotels(props) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const clearSearch = () => {
+    isSelectionMade.current = false;
+    setNoDataMsg('');
+    setSearchValue('');
+    setSuggestionsList([]);
+    setSearchResults([]);
+    setSearchedCity('');
   };
 
   return (
@@ -272,6 +278,10 @@ export default function Hotels(props) {
           isSelectionMade.current = false;
           setNoDataMsg('');
           setSearchValue(text);
+          if (text.trim() === '') {
+            setSearchResults([]);
+            setSearchedCity('');
+          }
         }}
         onPress={() => setIsModalVisible(true)}
         showFilter={false}
@@ -326,57 +336,16 @@ export default function Hotels(props) {
 
 
 
-        {featuredHotels?.length > 0 && (
+        {searchResults.length > 0 ? (
           <View style={styles.infoContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.heading}>Featured Hotels</Text>
+            <View style={[styles.flexRow, { justifyContent: 'space-between', paddingRight: 12.5 }]}>
+              <Text style={styles.heading}>Results in {searchedCity}</Text>
+              <TouchableOpacity onPress={clearSearch}>
+                <Text style={{ color: COLORS.PRIMARY, fontFamily: FONT_FAMILY.primaryBold, fontSize: 13 }}>Clear</Text>
+              </TouchableOpacity>
             </View>
             <View style={{ paddingHorizontal: 12.5 }}>
-              <FlatList
-                data={featuredHotels}
-                renderItem={({ item }) => <HotelCard showDetails={true} data={item}
-                  imageStyle={{
-                    height: '100%',
-                    width: width - 30
-                  }}
-                  imageContainer={{
-                    height: 150,
-                  }}
-                  cardStyle={{
-
-                    width: width - 150
-                  }}
-                  checkInDate={selectedStartDate}
-                  checkOutDate={selectedEndDate}
-                  noOfAdults={adult}
-                  noOfRooms={room}
-                  noOfChildren={children}
-                />}
-                horizontal
-                keyExtractor={(item, index) => index.toString()}
-                showsHorizontalScrollIndicator={false}
-              />
-              {/* {filteredHotels.map((data, i) => (
-                <HotelCard data={data} key={i} />
-              ))} */}
-            </View>
-          </View>
-        )}
-
-        <View style={styles.infoContainer}>
-          <View style={styles.flexRow}>
-            <Text style={styles.heading}>Exclusive Offers</Text>
-          </View>
-          <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
-        </View>
-
-        {trendingHotels?.length > 0 && (
-          <View style={styles.infoContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.heading}>Trendings Hotels</Text>
-            </View>
-            <View style={{ paddingHorizontal: 12.5 }}>
-              {trendingHotels.map((data, i) => (
+              {searchResults.map((data, i) => (
                 <HotelCard
                   data={data}
                   key={i}
@@ -389,26 +358,90 @@ export default function Hotels(props) {
               ))}
             </View>
           </View>
-        )}
-        {filteredHotels?.length > 0 && (
-          <View style={styles.infoContainer}>
-            <View style={styles.flexRow}>
-              <Text style={styles.heading}>Other Hotels</Text>
+        ) : (
+          <>
+            {featuredHotels?.length > 0 && (
+              <View style={styles.infoContainer}>
+                <View style={styles.flexRow}>
+                  <Text style={styles.heading}>Featured Hotels</Text>
+                </View>
+                <View style={{ paddingHorizontal: 12.5 }}>
+                  <FlatList
+                    data={featuredHotels}
+                    renderItem={({ item: featuredItem }) => <HotelCard showDetails={true} data={featuredItem}
+                      imageStyle={{
+                        height: '100%',
+                        width: width - 30
+                      }}
+                      imageContainer={{
+                        height: 150,
+                      }}
+                      cardStyle={{
+                        width: width - 150
+                      }}
+                      checkInDate={selectedStartDate}
+                      checkOutDate={selectedEndDate}
+                      noOfAdults={adult}
+                      noOfRooms={room}
+                      noOfChildren={children}
+                    />}
+                    horizontal
+                    keyExtractor={(_, index) => index.toString()}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              </View>
+            )}
+
+            <View style={styles.infoContainer}>
+              <View style={styles.flexRow}>
+                <Text style={styles.heading}>Exclusive Offers</Text>
+              </View>
+              <BannerCarousel data={banners.length > 0 ? banners : bannerData} showPagination={false} interval={3500} />
             </View>
-            <View style={{ paddingHorizontal: 12.5 }}>
-              {filteredHotels.map((data, i) => (
-                <HotelCard
-                  data={data}
-                  key={i}
-                  checkInDate={selectedStartDate}
-                  checkOutDate={selectedEndDate}
-                  noOfAdults={adult}
-                  noOfRooms={room}
-                  noOfChildren={children}
-                />
-              ))}
-            </View>
-          </View>
+
+            {trendingHotels?.length > 0 && (
+              <View style={styles.infoContainer}>
+                <View style={styles.flexRow}>
+                  <Text style={styles.heading}>Trendings Hotels</Text>
+                </View>
+                <View style={{ paddingHorizontal: 12.5 }}>
+                  {trendingHotels.map((data, i) => (
+                    <HotelCard
+                      data={data}
+                      key={i}
+                      checkInDate={selectedStartDate}
+                      checkOutDate={selectedEndDate}
+                      noOfAdults={adult}
+                      noOfRooms={room}
+                      noOfChildren={children}
+                    />
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {filteredHotels?.length > 0 && (
+              <View style={styles.infoContainer}>
+                <View style={styles.flexRow}>
+                  <Text style={styles.heading}>Other Hotels</Text>
+                </View>
+                <View style={{ paddingHorizontal: 12.5 }}>
+                  {filteredHotels.map((data, i) => (
+                    <HotelCard
+                      data={data}
+                      key={i}
+                      checkInDate={selectedStartDate}
+                      checkOutDate={selectedEndDate}
+                      noOfAdults={adult}
+                      noOfRooms={room}
+                      noOfChildren={children}
+                    />
+                  ))}
+                </View>
+              </View>
+            )}
+          </>
         )}
 
         {/* <View style={styles.infoContainer}>
@@ -456,13 +489,7 @@ export default function Hotels(props) {
                     </View>
                   ) : (
                     <TouchableOpacity
-                      // style={styles.cancel}
-                      onPress={() => {
-                        isSelectionMade.current = false;
-                        setNoDataMsg('');
-                        setSearchValue('');
-                        setSuggestionsList([]);
-                      }}>
+                      onPress={clearSearch}>
                       <Feather name="x" size={19} color={COLORS.PRIMARY} />
                     </TouchableOpacity>
                   ))}
