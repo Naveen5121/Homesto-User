@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,10 +8,10 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import {IMAGES} from '../../../constants/images';
+import { IMAGES } from '../../../constants/images';
 import styles from './style';
 
-import {COLORS} from '../../../constants/colors';
+import { COLORS } from '../../../constants/colors';
 
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -20,7 +20,7 @@ import CustomBtn from '../../../components/custom-btn';
 
 import SignUpModalAlert from '../../../components/signup-modal-alert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext} from '../../../../auth-context';
+import { AuthContext } from '../../../../auth-context';
 import ToastAlertMsg from '../../../components/toast-alert-msg';
 
 import ActivityLoader from '../../../components/activity-loader';
@@ -32,15 +32,17 @@ export default function SignUp(props) {
 
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
-  const [phone, setPhone] = useState(null);
+  const [phone, setPhone] = useState(props.route.params?.phone || null);
+  const authToken = props.route.params?.token || null;
+  const authUserId = props.route.params?.user_id || null;
   const [password, setPassword] = useState(null);
   const [userName, setUserName] = useState(null);
 
-  const {signIn} = React.useContext(AuthContext).authContext;
+  const { signIn } = React.useContext(AuthContext).authContext;
 
   const onSubmit = async () => {
     try {
-      signIn({token: 'accessToken', id: 'userId'});
+      signIn({ token: 'accessToken', id: 'userId' });
       await AsyncStorage.setItem('userId', 'userId');
       await AsyncStorage.setItem('accessToken', 'accessToken');
       //  setIsLoading(false);
@@ -53,15 +55,7 @@ export default function SignUp(props) {
     try {
       if (name && name.toString().trim().length > 0) {
         if (email && email.toString().trim().length > 0) {
-          if (userName && userName.toString().trim().length > 0) {
-            if (password && password.toString().trim().length > 0) {
-              onRegistration();
-            } else {
-              ToastAlertMsg('Please Enter Your Password');
-            }
-          } else {
-            ToastAlertMsg('Please Enter a Username');
-          }
+          onRegistration();
         } else {
           ToastAlertMsg('Please Enter Your Email');
         }
@@ -81,15 +75,17 @@ export default function SignUp(props) {
         name,
         email,
         phone,
-        password,
-        userName,
+        'AAaa@123',
+        'testuser',
       );
       console.log(data);
 
       if (data && data.success === 'true') {
         ToastAlertMsg(data.extraData || 'Registration successful!');
+        await AsyncStorage.setItem('accessToken', authToken);
+        await AsyncStorage.setItem('userId', authUserId?.toString());
         setIsLoading(false);
-        props.navigation.goBack();
+        signIn({ token: authToken, id: authUserId });
       } else {
         setIsLoading(false);
         ToastAlertMsg(data?.msg || 'Registration failed. Please try again.');
@@ -110,10 +106,10 @@ export default function SignUp(props) {
       />
       {isLoading && <ActivityLoader isLoading={isLoading} />}
       <ScrollView style={styles.container}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {Platform.OS === 'ios' && (
             <TouchableOpacity
-              style={{marginTop: 20}}
+              style={{ marginTop: 20 }}
               onPress={() => props.navigation.goBack()}>
               <Feather name="arrow-left" size={20} color={COLORS.BLACK} />
             </TouchableOpacity>
@@ -146,7 +142,7 @@ export default function SignUp(props) {
             keyboardType="phone-pad"
           />
 
-          <IconLabelInput
+          {/* <IconLabelInput
             placeholder="Username"
             icon="user"
             defaultValue={userName}
@@ -158,9 +154,9 @@ export default function SignUp(props) {
             secureText={true}
             defaultValue={password}
             onChangeText={text => setPassword(text)}
-          />
+          /> */}
 
-          <View style={{marginTop: 30}}>
+          <View style={{ marginTop: 30 }}>
             <CustomBtn title="Create Account" onPress={() => onValidate()} />
           </View>
         </View>

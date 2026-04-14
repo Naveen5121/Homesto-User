@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View} from 'react-native';
+import React, { useState } from 'react';
+import { View } from 'react-native';
 import API from '../../../../action/api';
 import ActivityLoader from '../../../../components/activity-loader';
 import AlertMsg from '../../../../components/alert-msg';
@@ -67,13 +67,13 @@ export default function EditProfile(props) {
           keyboardType="number-pad"
           defaultValue={phoneNo}
         />
-        <IconInput
+        {/* <IconInput
           placeholder="Enter Username"
           icon="user"
           defaultValue={username}
           onChangeText={text => setUsername(text)}
           keyboardType="email-address"
-        />
+        /> */}
         <IconInput
           placeholder="Enter Email Address"
           icon={'mail'}

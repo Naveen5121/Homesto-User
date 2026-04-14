@@ -60,7 +60,7 @@ const API = {
 
   async setRegistrationData(name, email, phone, password, username) {
     try {
-      const data = await makePostRequest(BASE_URL + '/new_user_registration', {
+      const data = await makePostRequest(BASE_URL + '/user_registration', {
         name: name,
         email: email,
         phone: phone,
@@ -68,6 +68,8 @@ const API = {
         username: username,
       });
 
+
+      console.log('Registration response:', data);
       if (data.success) {
         return data;
       }
@@ -569,6 +571,7 @@ const API = {
     try {
       const data = await makeGetRequestWithToken(BASE_URL + '/view_profile');
 
+      console.log('get user profile', data);
       if (data && data.success === 'true') {
         return data;
       } else {

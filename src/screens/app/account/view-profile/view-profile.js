@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
-import {COLORS} from '../../../../constants/colors';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, RefreshControl } from 'react-native';
+import { COLORS } from '../../../../constants/colors';
 import styles from './style';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {ProgressBar} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext} from '../../../../../auth-context';
+import { AuthContext } from '../../../../../auth-context';
 import ModalAlert from '../../../../components/modal-alert';
 import LinearGradient from 'react-native-linear-gradient';
+import API from '../../../../action/api';
 
 export default function ViewProfile(props) {
-  const {userProfile} = React.useContext(AuthContext);
-  console.log('profilr' + userProfile);
+  const { userProfile } = React.useContext(AuthContext);
+  const { updateUserProfile } = React.useContext(AuthContext).authContext;
 
   const list = [
- 
+
     {
       name: 'My Trips',
       image: 'briefcase',
@@ -22,12 +22,13 @@ export default function ViewProfile(props) {
       onPress: () => props.navigation.navigate('TopTabNavigator'),
     },
 
-   
+
   ];
 
+  const [refreshing, setRefreshing] = useState(false);
   const [deleteUser, setDeleteUser] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const {signOut} = React.useContext(AuthContext).authContext;
+  const { signOut } = React.useContext(AuthContext).authContext;
 
   const signOutUser = async () => {
     try {
@@ -40,20 +41,50 @@ export default function ViewProfile(props) {
       console.log(e);
     }
   };
+
+  async function fetchProfile() {
+    try {
+      const data = await API.getUserProfile();
+      if (data && data.success === 'true') {
+        updateUserProfile({userProfile: data.extraData.profile});
+      }
+    } catch (e) {
+      console.log('fetchProfile error', e);
+    }
+  }
+
+  async function onRefresh() {
+    setRefreshing(true);
+    await fetchProfile();
+    setRefreshing(false);
+  }
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
   return (
     <View style={styles.container}>
-      <ScrollView style={{}}>
-        <View style={{height: 50, backgroundColor: COLORS.PRIMARY}} />
+      <ScrollView
+        style={{}}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[COLORS.PRIMARY]}
+            tintColor={COLORS.PRIMARY}
+          />
+        }>
+        <View style={{ height: 50, backgroundColor: COLORS.PRIMARY }} />
 
         <View style={styles.topContainer}>
-          <View style={{flexDirection: 'row', marginBottom: 20}}>
+          <View style={{ flexDirection: 'row', marginBottom: 20 }}>
             <LinearGradient
               colors={[COLORS.PRIMARY, COLORS.SECONDARY]}
               style={styles.avatar}>
               <Text style={styles.avatarName}>{userProfile?.name[0]}</Text>
             </LinearGradient>
 
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.name}>{userProfile?.name}</Text>
               {/* <Text style={styles.info}>+91 9876543210</Text> */}
               <Text style={styles.info}>{userProfile?.phone}</Text>
@@ -91,7 +122,7 @@ export default function ViewProfile(props) {
                 size={20}
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text style={styles.listHeading}>{item.name}</Text>
 
               {item.subHeading && (
@@ -100,7 +131,7 @@ export default function ViewProfile(props) {
             </View>
           </TouchableOpacity>
         ))}
-        <View style={{marginVertical: 10}} />
+        <View style={{ marginVertical: 10 }} />
         {/*  <TouchableOpacity
           style={styles.listContainer}
           // onPress={() => props.navigation.navigate('PrivacyPolicy')}
