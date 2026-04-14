@@ -26,7 +26,6 @@ export default function ViewProfile(props) {
   ];
 
   const [refreshing, setRefreshing] = useState(false);
-  const [deleteUser, setDeleteUser] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const { signOut } = React.useContext(AuthContext).authContext;
 
