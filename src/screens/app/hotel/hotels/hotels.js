@@ -69,6 +69,7 @@ export default function Hotels(props) {
   const [children, setChildren] = useState(0);
   const [room, setRoom] = useState(1);
   const isSelectionMade = useRef(false);
+  const searchInputRef = useRef(null);
   const [noDataMsg, setNoDataMsg] = useState('');
 
   // Removed immediate filtering useEffect as it's now combined with the debounced suggestions effect.
@@ -458,7 +459,12 @@ export default function Hotels(props) {
         statusBarTranslucent={true}
         onRequestClose={() => setIsModalVisible(!isModalVisible)}
         animationType="fade"
-        visible={isModalVisible}>
+        visible={isModalVisible}
+        onShow={() => {
+          setTimeout(() => {
+            searchInputRef.current?.focus();
+          }, 150);
+        }}>
         <View style={styles.container}>
           <View style={styles.headerContainer}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -470,6 +476,7 @@ export default function Hotels(props) {
                 <Feather name="search" size={16} color={COLORS.DARK_GREY} />
 
                 <TextInput
+                  ref={searchInputRef}
                   style={styles.input}
                   placeholder="Search by city name or pincode"
                   value={searchValue}

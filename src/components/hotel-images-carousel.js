@@ -1,13 +1,45 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import Carousel from 'react-native-reanimated-carousel';
-import {View, Dimensions, StyleSheet, TouchableHighlight} from 'react-native';
-import {COLORS} from '../constants/colors';
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  TouchableHighlight,
+  Animated,
+  Modal,
+} from 'react-native';
+import { COLORS } from '../constants/colors';
 import ImageLoader from './image-loader';
-const {width, height} = Dimensions.get('window');
-import {Modal} from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 
-export default function HotelImagesCarousel({banner}) {
+const { width, height } = Dimensions.get('window');
+
+const AnimatedDot = ({ isActive }) => {
+  const widthAnim = useRef(new Animated.Value(isActive ? 20 : 6)).current;
+
+  React.useEffect(() => {
+    Animated.timing(widthAnim, {
+      toValue: isActive ? 20 : 6,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [isActive]);
+
+  return (
+    <Animated.View
+      style={[
+        styles.dot,
+        {
+          width: widthAnim,
+          backgroundColor: isActive ? COLORS.PRIMARY : COLORS.WHITE,
+          opacity: isActive ? 1 : 0.7,
+        },
+      ]}
+    />
+  );
+};
+
+export default function HotelImagesCarousel({ banner }) {
   const [isImageVisible, setIsImageVisible] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -18,7 +50,7 @@ export default function HotelImagesCarousel({banner}) {
 
   const carouselRef = useRef(null);
 
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
       <View style={styles.item} key={item.id}>
         <TouchableHighlight
@@ -56,10 +88,7 @@ export default function HotelImagesCarousel({banner}) {
       />
       <View style={styles.dotContainer}>
         {banner.map((_, i) => (
-          <View
-            key={i}
-            style={i === currentIndex ? styles.activeDot : styles.dot}
-          />
+          <AnimatedDot key={i} isActive={i === currentIndex} />
         ))}
       </View>
     </View>
@@ -83,11 +112,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   image: {
-    //resizeMode: 'stretch',
     width: width,
     height: 250,
   },
-
   dotContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -95,19 +122,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
   },
-  activeDot: {
-    height: 7,
-    width: 7,
-    backgroundColor: COLORS.PRIMARY,
-    borderRadius: 7,
-    marginHorizontal: 2.5,
-    elevation: 2,
-  },
   dot: {
-    height: 5,
-    width: 5,
-    backgroundColor: COLORS.WHITE,
-    borderRadius: 6,
+    height: 6,
+    borderRadius: 3,
     marginHorizontal: 2.5,
     elevation: 2,
   },
