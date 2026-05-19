@@ -658,9 +658,12 @@ const API = {
     }
   },
 
-  async getRoomTypes() {
+  async getRoomTypes(hotelId) {
     try {
-      const data = await makeGetRequestWithToken(BASE_URL + '/room_type');
+      // const data = await makeGetRequestWithToken(BASE_URL + '/room_type');
+      const data = await makePostRequestWithToken(BASE_URL + '/get_room_type_rooms_by_hotel_id', {
+        hotel_id: hotelId
+      });
 
       if (data.success) {
         return data;

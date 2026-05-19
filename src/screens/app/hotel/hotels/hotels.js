@@ -422,7 +422,7 @@ export default function Hotels(props) {
               </View>
             )}
 
-            {filteredHotels?.length > 0 && (
+            {/* {filteredHotels?.length > 0 && (
               <View style={styles.infoContainer}>
                 <View style={styles.flexRow}>
                   <Text style={styles.heading}>Other Hotels</Text>
@@ -441,7 +441,7 @@ export default function Hotels(props) {
                   ))}
                 </View>
               </View>
-            )}
+            )} */}
           </>
         )}
 

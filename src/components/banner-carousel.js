@@ -18,9 +18,9 @@ export default function BannerCarousel({ data, height = 180, showPagination = tr
                         {item.description || item.hotel_name || 'Exclusive deals on top-rated stays'}
                     </Text>
                 </View>
-                <TouchableOpacity style={styles.bookNowButton} activeOpacity={0.8}>
+                {/* <TouchableOpacity style={styles.bookNowButton} activeOpacity={0.8}>
                     <Text style={styles.bookNowText}>Book Now</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         </View>
     );

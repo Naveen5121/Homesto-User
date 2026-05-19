@@ -20,6 +20,26 @@ import ImageLoader from '../../../components/image-loader';
 import ActivityLoader from '../../../components/activity-loader';
 import { PAYMENT } from '../../../components/razorpay-payment';
 
+const getRoomImage = (roomImages) => {
+  if (Array.isArray(roomImages)) {
+    return roomImages.length > 0 ? roomImages[0] : 'https://via.placeholder.com/150';
+  }
+  if (typeof roomImages === 'string' && roomImages.trim() !== '') {
+    if (roomImages.startsWith('[') && roomImages.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(roomImages);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed[0];
+        }
+      } catch (e) {
+        console.log('Error parsing room_images JSON string:', e);
+      }
+    }
+    return roomImages;
+  }
+  return 'https://via.placeholder.com/150';
+};
+
 export default function SelectBookingDetails(props) {
   const [hourlyBooking, setHourlyBooking] = useState(false);
   const [hours, setHours] = useState(3);
@@ -41,9 +61,18 @@ export default function SelectBookingDetails(props) {
 
   const fetchRoomTypes = async () => {
     try {
-      const res = await API.getRoomTypes();
+      const res = await API.getRoomTypes(hotelDetails?.id);
       if (res && res.success === 'true') {
-        setRoomTypes(res.extraData.roomtype);
+        const roomTypesData = Array.isArray(res.extraData)
+          ? res.extraData[0]?.room_type
+          : (res.extraData?.room_type || res.extraData?.roomtype);
+        
+        // Filter only those room types that have valid room details (not 0 or empty arrays)
+        const filteredRoomTypes = (roomTypesData || []).filter(
+          item => Array.isArray(item.room_detail) && item.room_detail.length > 0
+        );
+        
+        setRoomTypes(filteredRoomTypes);
       }
     } catch (error) {
       console.log('Error fetching room types:', error);
@@ -53,7 +82,10 @@ export default function SelectBookingDetails(props) {
     try {
       const res = await API.getRoomsByTypeAndHotelId(hotelDetails.id, typeId);
       if (res && res.success === 'true') {
-        setRooms(res.extraData.roomtype);
+        const roomsData = Array.isArray(res.extraData)
+          ? res.extraData
+          : (res.extraData?.room_detail || res.extraData?.roomtype || []);
+        setRooms(roomsData);
         setSelectedRooms([]);
       } else {
         setRooms([]);
@@ -317,7 +349,12 @@ export default function SelectBookingDetails(props) {
                     ]}
                     onPress={() => {
                       setSelectedRoomType(item);
-                      fetchRoomsByType(item.id);
+                      if (Array.isArray(item.room_detail) && item.room_detail.length > 0) {
+                        setRooms(item.room_detail);
+                        setSelectedRooms([]);
+                      } else {
+                        fetchRoomsByType(item.id);
+                      }
                     }}>
                     <Text style={styles.roomTypeText}>{item.name}</Text>
                   </TouchableOpacity>
@@ -329,7 +366,7 @@ export default function SelectBookingDetails(props) {
                   <Text style={styles.roomTypeTitle}>Select a Room</Text>
                   {rooms.map((room, index) => (
                     <View key={index} style={styles.roomItem}>
-                      <ImageLoader image={room.room_images} style={styles.roomImage} />
+                      <ImageLoader image={getRoomImage(room.room_images)} style={styles.roomImage} />
                       <View style={styles.roomInfo}>
                         <Text style={styles.roomName}>{room.room_name}</Text>
                         <Text style={styles.roomPrice}>₹{room.price}</Text>
