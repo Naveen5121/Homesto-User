@@ -38,7 +38,7 @@ export default function BookingsDetails(props) {
         setbookingDetails(data.extraData.order);
 
         setShowCancel(
-          data.extraData.order.order_status === 'Cancel' ? false : true,
+          data.extraData.order.order_status === 'Cancel' || data.extraData.order.order_status === 'Checked Out' ? false : true,
         );
         setIsLoading(false);
       } else {
@@ -134,7 +134,8 @@ export default function BookingsDetails(props) {
                   {bookingDetails.order_status === 'Cancel' ? (
                     <Text style={styles.cancelStatus}>Cancelled</Text>
                   ) : (
-                    <Text style={styles.status}>Confirmed</Text>
+                    bookingDetails.order_status === 'Checked Out' ?
+                      <Text style={styles.status}>{bookingDetails.order_status}</Text> : <Text style={styles.status}>Confirmed</Text>
                   )}
 
                   <Text style={styles.bookingDate}>
@@ -214,6 +215,21 @@ export default function BookingsDetails(props) {
             onPress={() => props.navigation.navigate('CancelBooking', orderId)}>
             <Text style={styles.cancelBtnTxt}>Cancel Booking</Text>
           </TouchableOpacity>
+        </View>
+      )}
+      {bookingDetails?.order_status === 'Checked Out' && (
+        <View style={styles.bottomContainer}>
+          <View
+            style={[styles.cancelBtn, {
+              borderColor: '#10B981',
+              backgroundColor: '#10B981',
+            }]}
+          // onPress={() => props.navigation.navigate('CancelBooking', orderId)}
+          >
+            <Text style={[styles.cancelBtnTxt, {
+              color: '#fff',
+            }]}>Checked Out</Text>
+          </View>
         </View>
       )}
     </>

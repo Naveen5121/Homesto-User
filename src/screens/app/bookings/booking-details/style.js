@@ -1,8 +1,8 @@
-import {Dimensions, StyleSheet} from 'react-native';
-import {COLORS} from '../../../../constants/colors';
-import {FONT_FAMILY} from '../../../../constants/font-family';
+import { Dimensions, StyleSheet } from 'react-native';
+import { COLORS } from '../../../../constants/colors';
+import { FONT_FAMILY } from '../../../../constants/font-family';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 export default StyleSheet.create({
   container: {
@@ -106,6 +106,8 @@ export default StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
     elevation: 5,
+    marginBottom: 20
+
   },
 
   cancelBtnTxt: {
