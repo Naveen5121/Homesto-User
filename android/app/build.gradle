@@ -17,8 +17,8 @@ android {
         applicationId "com.homesto"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 21
-        versionName "0.21"
+        versionCode 22
+        versionName "0.22"
     }
 
     signingConfigs {
