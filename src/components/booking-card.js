@@ -7,15 +7,15 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import {COLORS} from '../constants/colors';
-import {FONT_FAMILY} from '../constants/font-family';
+import { COLORS } from '../constants/colors';
+import { FONT_FAMILY } from '../constants/font-family';
 
 import Feather from 'react-native-vector-icons/Feather';
 
-import {useNavigation} from '@react-navigation/native';
-import {AirbnbRating} from '@rneui/themed';
+import { useNavigation } from '@react-navigation/native';
+import { AirbnbRating } from '@rneui/themed';
 
-export default function BookingCard({data, cancleBooking}) {
+export default function BookingCard({ data, cancleBooking }) {
   const navigation = useNavigation();
 
   const formatDate = dateString => {
@@ -40,21 +40,27 @@ export default function BookingCard({data, cancleBooking}) {
     <TouchableOpacity
       style={styles.card}
       onPress={() =>
-        navigation.navigate('BookingDetails', {bookingData: data})
+        navigation.navigate('BookingDetails', { bookingData: data })
       }>
       <Text
         style={{
           ...styles.status,
           backgroundColor:
-            data?.bookingStatus === 'expired' || 'canceled'
+            data?.bookingStatus === 'expired' || 'cancel'
               ? 'red'
               : data?.bookingStatus === 'pending'
-              ? 'yellow'
-              : 'green',
+                ? 'yellow'
+                : 'green',
+          borderColor:
+            data?.bookingStatus === 'expired' || 'cancel'
+              ? 'red'
+              : data?.bookingStatus === 'pending'
+                ? 'yellow'
+                : 'green',
         }}>
         {data?.bookingStatus || 'Unknown'}
       </Text>
-      <View style={{flexDirection: 'row', padding: 10}}>
+      <View style={{ flexDirection: 'row', padding: 10 }}>
         <View style={styles.imgContainer}>
           <Image
             source={{
@@ -63,7 +69,7 @@ export default function BookingCard({data, cancleBooking}) {
             style={styles.img}
           />
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <View style={styles.ratingContainer}>
             <AirbnbRating
               size={12}
@@ -86,7 +92,7 @@ export default function BookingCard({data, cancleBooking}) {
               {hotel?.address || 'No Address Provided'}
             </Text>
           </View>
-          <View style={{marginVertical: 5}} />
+          <View style={{ marginVertical: 5 }} />
           <View style={styles.flexRow}>
             <Feather name="users" size={12} color={COLORS.BLACK} width={15} />
             <Text style={styles.guest}>
@@ -98,9 +104,9 @@ export default function BookingCard({data, cancleBooking}) {
         </View>
       </View>
 
-      <View style={{padding: 10}}>
-        <View style={{flexDirection: 'row', marginBottom: 8}}>
-          <View style={{flex: 1}}>
+      <View style={{ padding: 10 }}>
+        <View style={{ flexDirection: 'row', marginBottom: 8 }}>
+          <View style={{ flex: 1 }}>
             <Text style={styles.checkInOut}>Check in</Text>
             <Text style={styles.dateTime}>
               {formatDate(data?.bookingDate?.checkIn)}{' '}
@@ -108,7 +114,7 @@ export default function BookingCard({data, cancleBooking}) {
             </Text>
           </View>
           <View>
-            <Text style={{...styles.checkInOut, textAlign: 'right'}}>
+            <Text style={{ ...styles.checkInOut, textAlign: 'right' }}>
               Check out
             </Text>
             <Text
